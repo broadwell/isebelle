@@ -8,7 +8,6 @@ default:
 # Start the application
 @up:
   docker compose up
-  #docker compose exec -T isebelle-db sh -c "LOG_LEVEL=$LOG_LEVEL cp /tmp/db-dict-files/* /usr/share/postgresql/15/tsearch_data/."
 
 # (Re)build all containers
 @build:
@@ -54,23 +53,12 @@ default:
   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_embeddings.py --embeddings-path \"\$STORIES_SRC_FOLDER/$1\""
 
 # Refresh PostgreSQL materialized views
-@refresh-db-views:
-  docker compose exec -T db sh -c 'psql -U isebelle -c "REFRESH MATERIALIZED VIEW CONCURRENTLY story_meta;"'
+# @refresh-db-views:
+#   docker compose exec -T db sh -c 'psql -U isebelle -c "REFRESH MATERIALIZED VIEW CONCURRENTLY story_meta;"'
 
 # Load all stories in a collection into the DB, chunking and calculating embeddings
 # @add-collection path: && refresh-db-views
 #   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\""
-
-# Run the POEM embeddings generator on an existing CSV file, producing an output CSV file
-#@compute-poem-embeddings path:
-#  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL cd /app/lib && python3 -m poem.pr_vipe.infer --input_csv=/app/poem_files/$1/$1.csv --output_dir=/app/poem_files/$1/ --checkpoint_path=/app/lib/poem/checkpoints/checkpoint_Pr-VIPE_2M/model.ckpt-02013963"
-#  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL rm /app/poem_files/$1/unnormalized_embedding_samples.csv && rm /app/poem_files/$1/embedding_stddevs.csv"
-
-# Prepare input for Pr-VIPE viewpoint-invariant pose embeddings; generate and load output into DB for a video
-#@do-poem-embeddings path:
-#  just make-poem-input $1
-#  just compute-poem-embeddings $1
-#  just import-poem-embeddings $1
 
 # Print a mapping of UUIDs to story names
 #print-stories:
