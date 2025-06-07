@@ -1,0 +1,101 @@
+services:
+  api:
+    container_name: isebelle-api
+    build: ./api
+
+    volumes:
+      - ./api:/app:Z
+      - ${STORIES_SRC_FOLDER:?}:/stories
+      - ${CACHE_FOLDER:-./isebelle-cache}:/static
+      #- ./web-extras:/extras
+
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      PUBLIC_API_BASE: /api
+
+      DB_NAME: ${DB_NAME:?}
+      DB_USER: ${DB_USER:?}
+      DB_PASSWORD: ${DB_PASSWORD:?}
+      JUPYTER_TOKEN: ${JUPYTER_PASSWORD:?}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      STORIES_SRC_FOLDER: /stories
+      CACHE_FOLDER: /static
+
+    depends_on:
+      - db
+
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf'
+
+  web-ui:
+    container_name: isebelle-web-ui
+    build: ./web-ui
+
+    volumes:
+      - ./web-ui:/app:Z
+
+    environment:
+      PUBLIC_API_BASE: /api
+      COREPACK_ENABLE_AUTO_PIN: 0
+
+  db:
+    container_name: isebelle-db
+    image: ankane/pgvector
+    #image: pgvector/pgvector:0.8.0-pg17
+    #build: ./db
+
+    shm_size: 1g
+
+    volumes:
+      - isebelle-db-data:/var/lib/postgresql/data
+      # - ./db-dict-files:/tmp/db-dict-files
+      # - ./db-dict-files/copy_icelandic.sh:/usr/local/bin/copy_icelandic.sh
+
+    environment:
+      POSTGRES_DB: ${DB_NAME:?}
+      POSTGRES_USER: ${DB_USER:?}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
+
+    # entrypoint:
+    #   - docker-entrypoint.sh
+    #   - copy_icelandic.sh
+
+    #command: bash -c 'cp /tmp/db-dict-files/* /usr/share/postgresql/15/tsearch_data/. ; /usr/local/bin/docker-entrypoint.sh &'
+    #command: bash -c '/usr/local/bin/docker-entrypoint.sh'
+
+
+  web-proxy:
+    &proxy
+    profiles:
+        - ''
+    container_name: isebelle-web-proxy
+    image: nginx:alpine
+    ports:
+      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8080}:80
+
+    volumes:
+      - ./nginx.config:/etc/nginx/conf.d/default.conf
+      - ${CACHE_FOLDER:-./isebelle-cache}:/static
+      - ./web-ui:/app
+
+    depends_on:
+      - api
+      - web-ui
+
+    stop_grace_period: 0s
+
+  web-proxy-tls:
+    <<: *proxy
+    profiles:
+      - tls
+    ports:
+      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8080}:80
+      - ${APP_HOST:-127.0.0.1}:443:443
+    volumes:
+      - ./nginx.tls.config:/etc/nginx/conf.d/default.conf
+      - ${CACHE_FOLDER:-./isebelle-cache}:/static
+      - ./web-ui:/app
+      - ../ssl:/ssl
+
+volumes:
+  isebelle-db-data:
