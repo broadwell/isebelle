@@ -104,7 +104,7 @@
 			{#if cell.key === 'text_embedding'}
 				<Link
 					icon={Launch}
-					href={`${base}/similar/${row.id}?collection=${collectionName}`}
+					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
 					target="_blank">Similar</Link
 				>
 			{:else}

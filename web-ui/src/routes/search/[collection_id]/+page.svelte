@@ -7,7 +7,7 @@
 	let /** @type {Number} */ currentPage = $state(1);
 	let /** @type {Number} */ pageSize = $state(10);
 	let /** @type {Number} */ totalMatchingStories = $state(0);
-	let /** @type {String} */ collectionName = $state('');
+	let /** @type {String} */ collectionName = '';
 	let /** @type {String} */ collectionId = '';
 	let /** @type {String} */ searchQuery = '';
 	let /** @type {StoryRecord[]} */ matchingRows = [];
@@ -40,7 +40,7 @@
 			(data) => data.json()
 		);
 
-		collectionName = collectionInfo.name.replaceAll('_', ' ');
+		collectionName = collectionInfo.name;
 		const searchLanguage = collectionInfo.search_language;
 
 		matchingRows = await fetch(
@@ -75,7 +75,7 @@
 		on:update={updatePagination}
 	/>
 	<DataTable
-		title={`Matching stories in the collection ${collectionName}`}
+		title={`Matching stories in the collection ${collectionName.replaceAll('_', ' ')}`}
 		description="Search text: {searchQuery}"
 		zebra
 		size="tall"
