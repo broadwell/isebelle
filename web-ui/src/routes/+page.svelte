@@ -15,39 +15,38 @@
 			>ISEBEL: Intelligent Search Engine for Belief Legends</a
 		> project, which uses automatic English cross-translation and an additional set of domain-specific
 		key term mappings curated by experts to enable searching and browsing of folklore story collections
-		that are recorded a variety of languages. The texts and story, person and place metadata indexed
-		for ISEBEL and on this site were generously made available by the institutions below. Click on each
-		logo to access the collection at its origin site.
+		that are recorded in a variety of languages. The texts and story, person and place metadata indexed
+		for ISEBEL and on this site were generously made available by the institutions below (click each
+		logo to visit the original collection).
 	</p>
 	<p>
 		The purpose of the Isebelle sub-project is to investigate the use of multilingual semantic
 		embeddings to enable further cross-lingual exploration of folklore stories. In addition to
-		traditional lexical search of the story texts, this site enables searching for the semantic
-		"nearest neighbor" texts of a selected story or of an arbitrary search string, in many
-		languages. Please select the "Search" icon in the menu at left to begin exploring the sample
-		collections.
+		traditional lexical search of the story texts, this site enables searching across languages for
+		the semantic "nearest neighbor" texts of a selected story or of an arbitrary search string.
+		Please select the "Search" icon in the menu at left to begin exploring the sample collections.
 	</p>
 
 	<div class="logo-row">
-		<a href="https://isebel.edu"
+		<a href="https://isebel.edu" target="_blank"
 			><img src="{base}/static/IsebelLogoMedium.jpg" alt="ISEBEL project logo" /></a
 		>
-		<a href=""
+		<a href="https://scando.ist.berkeley.edu" target="_blank"
 			><img
 				src="{base}/static/comp_foklore_berkeley.png"
 				alt="Logo of the UC Berkeley Computational Folklore Lab"
 			/></a
 		>
-		<a href="https://www.verhalenbank.nl/"
+		<a href="https://www.verhalenbank.nl/" target="_blank"
 			><img src="{base}/static/logo_Meertens.png" alt="Logo of the Meertens Institut" /></a
 		>
-		<a href="https://www.wossidia.de/"
+		<a href="https://www.wossidia.de/" target="_blank"
 			><img src="{base}/static/wossidia4isebel.svg" alt="Logo of the Wossidia Archive" /></a
 		>
-		<a href="https://ismus.is/tjodfraedi/sagnir/"
+		<a href="https://ismus.is/tjodfraedi/sagnir/" target="_blank"
 			><img src="{base}/static/Sagnagrunnur.png" alt="Logo of the Sagnagrunnur project" /></a
 		>
-		<a href="https://samla.no/viewer/index/"
+		<a href="https://samla.no/viewer/index/" target="_blank"
 			><img src="{base}/static/Samla_black.svg" alt="Logo of the SAMLA project" /></a
 		>
 	</div>
