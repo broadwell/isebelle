@@ -12,7 +12,7 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      PUBLIC_API_BASE: /api
+      PUBLIC_API_BASE: /isebelle/api
 
       DB_NAME: ${DB_NAME:?}
       DB_USER: ${DB_USER:?}
@@ -35,34 +35,21 @@ services:
       - ./web-ui:/app:Z
 
     environment:
-      PUBLIC_API_BASE: /api
+      PUBLIC_API_BASE: /isebelle/api
       COREPACK_ENABLE_AUTO_PIN: 0
 
   db:
     container_name: isebelle-db
     image: ankane/pgvector
-    #image: pgvector/pgvector:0.8.0-pg17
-    #build: ./db
-
     shm_size: 1g
 
     volumes:
       - isebelle-db-data:/var/lib/postgresql/data
-      # - ./db-dict-files:/tmp/db-dict-files
-      # - ./db-dict-files/copy_icelandic.sh:/usr/local/bin/copy_icelandic.sh
 
     environment:
       POSTGRES_DB: ${DB_NAME:?}
       POSTGRES_USER: ${DB_USER:?}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?}
-
-    # entrypoint:
-    #   - docker-entrypoint.sh
-    #   - copy_icelandic.sh
-
-    #command: bash -c 'cp /tmp/db-dict-files/* /usr/share/postgresql/15/tsearch_data/. ; /usr/local/bin/docker-entrypoint.sh &'
-    #command: bash -c '/usr/local/bin/docker-entrypoint.sh'
-
 
   web-proxy:
     &proxy

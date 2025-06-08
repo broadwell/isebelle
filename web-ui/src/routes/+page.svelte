@@ -11,27 +11,27 @@
 	<h1>Isebelle: Intelligent Search Engine for BELief Legend Embeddings</h1>
 	<div class="logo-row">
 		<a href="https://isebel.edu"
-			><img src="/static/IsebelLogoMedium.jpg" alt="ISEBEL project logo" /></a
+			><img src="{base}/static/IsebelLogoMedium.jpg" alt="ISEBEL project logo" /></a
 		>
 		<a href=""
 			><img
-				src="/static/comp_foklore_berkeley.png"
+				src="{base}/static/comp_foklore_berkeley.png"
 				alt="Logo of the UC Berkeley Computational Folklore Lab"
 			/></a
 		>
 		<a href="https://www.verhalenbank.nl/"
-			><img src="/static/logo_Meertens.png" alt="Logo of the Meertens Institut" /></a
+			><img src="{base}/static/logo_Meertens.png" alt="Logo of the Meertens Institut" /></a
 		>
 		<a href="https://www.wossidia.de/"
-			><img src="/static/wossidia4isebel.svg" alt="Logo of the Wossidia Archive" /></a
+			><img src="{base}/static/wossidia4isebel.svg" alt="Logo of the Wossidia Archive" /></a
 		>
 	</div>
 	<div class="logo-row">
 		<a href="https://ismus.is/tjodfraedi/sagnir/"
-			><img src="/static/Sagnagrunnur.png" alt="Logo of the Sagnagrunnur project" /></a
+			><img src="{base}/static/Sagnagrunnur.png" alt="Logo of the Sagnagrunnur project" /></a
 		>
 		<a href="https://samla.no/viewer/index/"
-			><img src="/static/Samla_black.svg" alt="Logo of the SAMLA project" /></a
+			><img src="{base}/static/Samla_black.svg" alt="Logo of the SAMLA project" /></a
 		>
 	</div>
 </section>
