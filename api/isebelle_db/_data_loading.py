@@ -43,7 +43,7 @@ async def add_collection(
         """
         INSERT
             INTO collection (name, org_name, country, search_language, display_language)
-            VALUES ($1, $2, $3, $4)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING id
         ;
         """,
@@ -116,7 +116,7 @@ async def load_stories(
                     """
                     INSERT INTO story (
                         collection_id, collection_name, story_id, language_iso_639, text, search_language, display_language, text_embedding)
-                        VALUES($1, $2, $3, $4, $5, $6, $7)
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8)
                     ;
                     """,
                     stories_to_add,
@@ -127,7 +127,7 @@ async def load_stories(
                     """
                     INSERT INTO story (
                         collection_id, collection_name, story_id, language_iso_639, text, search_language, display_language)
-                        VALUES($1, $2, $3, $4, $5, $6)
+                        VALUES($1, $2, $3, $4, $5, $6, $7)
                     ;
                     """,
                     stories_to_add,
