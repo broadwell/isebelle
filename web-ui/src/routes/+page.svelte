@@ -28,7 +28,7 @@
 	</p>
 
 	<div class="logo-row">
-		<a href="https://isebel.edu" target="_blank"
+		<a href="https://isebel.eu" target="_blank"
 			><img src="{base}/static/IsebelLogoMedium.jpg" alt="ISEBEL project logo" /></a
 		>
 		<a href="https://scando.ist.berkeley.edu" target="_blank"
