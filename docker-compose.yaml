@@ -7,7 +7,6 @@ services:
       - ./api:/app:Z
       - ${STORIES_SRC_FOLDER:?}:/stories
       - ${CACHE_FOLDER:-./isebelle-cache}:/static
-      #- ./web-extras:/extras
 
     environment:
       DB_HOST: db
@@ -41,28 +40,16 @@ services:
   db:
     container_name: isebelle-db
     image: ankane/pgvector
-    #image: pgvector/pgvector:0.8.0-pg17
-    #build: ./db
 
     shm_size: 1g
 
     volumes:
       - isebelle-db-data:/var/lib/postgresql/data
-      # - ./db-dict-files:/tmp/db-dict-files
-      # - ./db-dict-files/copy_icelandic.sh:/usr/local/bin/copy_icelandic.sh
 
     environment:
       POSTGRES_DB: ${DB_NAME:?}
       POSTGRES_USER: ${DB_USER:?}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?}
-
-    # entrypoint:
-    #   - docker-entrypoint.sh
-    #   - copy_icelandic.sh
-
-    #command: bash -c 'cp /tmp/db-dict-files/* /usr/share/postgresql/15/tsearch_data/. ; /usr/local/bin/docker-entrypoint.sh &'
-    #command: bash -c '/usr/local/bin/docker-entrypoint.sh'
-
 
   web-proxy:
     &proxy
