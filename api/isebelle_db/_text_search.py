@@ -13,6 +13,7 @@ async def lexical_search(
         f"""
         SELECT
             story_id,
+            collection_name
             search_language,
             text,
             ts_rank(search_text, query) AS rank

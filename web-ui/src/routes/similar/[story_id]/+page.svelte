@@ -71,7 +71,7 @@
 	/>
 	<DataTable
 		title={'Matching stories in the selected collections'}
-		description="Similar to story {storyId} from {storyCollectionName}"
+		description="Similar to story {storyId} from {storyCollectionName.replaceAll('_', ' ')}"
 		zebra
 		size="tall"
 		{headers}
@@ -81,7 +81,7 @@
 			{#if cell.key === 'text_embedding'}
 				<Link
 					icon={Launch}
-					href={`${base}/similar/${row.id}?collection={row.collection}`}
+					href={`${base}/similar/${row.id}?collection=${row.collection}`}
 					target="_blank">Similar</Link
 				>
 			{:else}

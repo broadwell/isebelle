@@ -14,8 +14,7 @@
 
 	const headers = [
 		{ key: 'id', value: 'ID' },
-		{ key: 'collection', value: 'Collection' },
-		{ key: 'language', value: 'Language' },
+		{ key: 'search_language', value: 'Language' },
 		{ key: 'text', value: 'Text' },
 		{ key: 'text_embedding', value: 'Explore' }
 		//{ key: 'chunk_count', value: 'Chunks' }
@@ -59,10 +58,9 @@
 			.then((data) =>
 				data.map((/** @type {StoryRecord} */ story) => ({
 					id: story.story_id,
-					collection: story.collection_name,
-					language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
-					text: story.text,
-					embedding: story.text_embedding
+					collection_name: story.collection_name,
+					search_language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
+					text: story.text
 					//chunks_count: story.chunks.toLocaleString()
 				}))
 			);
@@ -106,7 +104,7 @@
 			{#if cell.key === 'text_embedding'}
 				<Link
 					icon={Launch}
-					href={`${base}/similar/${row.id}?collection=${row.collection}`}
+					href={`${base}/similar/${row.id}?collection=${collectionName}`}
 					target="_blank">Similar</Link
 				>
 			{:else}
