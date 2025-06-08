@@ -20,6 +20,7 @@ LANGUAGES = {
     "german": "de",
     "low german": "nds",
     "flemish": "nld",
+    "norwegian": "nn-NO",
 }
 
 
