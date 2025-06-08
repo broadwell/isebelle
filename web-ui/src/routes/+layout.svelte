@@ -50,7 +50,7 @@
 			icon={Search}
 			text="Search"
 			href="{base}/browse/"
-			isSelected={$page.url.pathname == `${base}/browse`}
+			isSelected={$page.url.pathname == `${base}/browse/`}
 		/>
 		<!-- <SideNavLink
 			icon={ChartScatter}
@@ -61,8 +61,8 @@
 		<SideNavLink
 			icon={LogoJupyter}
 			text="Notebooks"
-			href="{base}/jupyter/tree/notebooks/"
-			isSelected={$page.url.pathname == `${base}/jupyter`}
+			href="/jupyter/tree/notebooks/"
+			isSelected={$page.url.pathname == `/jupyter/tree/notebooks/`}
 		/>
 		<SideNavDivider />
 		<SideNavLink icon={LogoGithub} text="GitHub" href="https://github.com/broadwell/isebelle" />

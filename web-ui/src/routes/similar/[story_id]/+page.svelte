@@ -1,6 +1,7 @@
 <script>
 	import { DataTable, Link, Pagination } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 
 	let /** @type {Number} */ currentPage = $state(1);
@@ -70,7 +71,7 @@
 	/>
 	<DataTable
 		title={'Matching stories in the selected collections'}
-		description="Similar to story {storyId} from {storyCollectionName}"
+		description="Similar to story {storyId} from {storyCollectionName.replaceAll('_', ' ')}"
 		zebra
 		size="tall"
 		{headers}
@@ -78,8 +79,10 @@
 	>
 		<svelte:fragment slot="cell" let:row let:cell>
 			{#if cell.key === 'text_embedding'}
-				<Link icon={Launch} href={`/similar/${row.id}?collection={row.collection}`} target="_blank"
-					>Similar</Link
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${row.collection}`}
+					target="_blank">Similar</Link
 				>
 			{:else}
 				{cell.value}

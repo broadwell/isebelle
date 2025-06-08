@@ -1,7 +1,8 @@
 <script>
-	import { DataTable, Pagination } from 'carbon-components-svelte';
+	import { DataTable, Link, Pagination } from 'carbon-components-svelte';
+	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
-	// import { goto } from '$app/navigation';
 
 	let /** @type {Number} */ currentPage = $state(1);
 	let /** @type {Number} */ pageSize = $state(10);
@@ -13,9 +14,9 @@
 
 	const headers = [
 		{ key: 'id', value: 'ID' },
-		{ key: 'language', value: 'Language' },
 		{ key: 'text', value: 'Text' },
-		{ key: 'rank', value: 'Search Rank' }
+		{ key: 'rank', value: 'Search Rank' },
+		{ key: 'text_embedding', value: 'Explore' }
 		//{ key: 'chunk_count', value: 'Chunks' }
 	];
 
@@ -48,8 +49,8 @@
 			.then((data) =>
 				data.map((/** @type {StoryRecord} */ story) => ({
 					id: story.story_id,
-					language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
 					text: story.text,
+					text_embedding: story.text_embedding,
 					rank: Math.round(story.rank * 1000) / 1000
 					//chunks_count: story.chunks.toLocaleString()
 				}))
@@ -78,5 +79,17 @@
 		size="tall"
 		{headers}
 		rows={filterRows(rows)}
-	></DataTable>
+	>
+		<svelte:fragment slot="cell" let:row let:cell>
+			{#if cell.key === 'text_embedding'}
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
+					target="_blank">Similar</Link
+				>
+			{:else}
+				{cell.value}
+			{/if}
+		</svelte:fragment>
+	</DataTable>
 {/await}

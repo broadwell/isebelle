@@ -1,6 +1,7 @@
 <script>
 	import { DataTable, Link, Pagination, Search } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -13,15 +14,14 @@
 
 	const headers = [
 		{ key: 'id', value: 'ID' },
-		{ key: 'collection', value: 'Collection' },
-		{ key: 'language', value: 'Language' },
+		{ key: 'search_language', value: 'Language' },
 		{ key: 'text', value: 'Text' },
 		{ key: 'text_embedding', value: 'Explore' }
 		//{ key: 'chunk_count', value: 'Chunks' }
 	];
 
 	const searchTexts = () => {
-		goto(`/search/${collectionId}?query=${searchQuery}&limit=10000`);
+		goto(`${base}/search/${collectionId}?query=${searchQuery}&limit=10000`);
 	};
 
 	const updatePagination = (/** @type {CustomEvent} */ paginationEvent) => {
@@ -31,7 +31,7 @@
 			paginationEvent.detail.pageSize != searchParams.get('pageSize')
 		)
 			goto(
-				`/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
+				`${base}/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
 			);
 	};
 
@@ -58,10 +58,9 @@
 			.then((data) =>
 				data.map((/** @type {StoryRecord} */ story) => ({
 					id: story.story_id,
-					collection: story.collection_name,
-					language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
-					text: story.text,
-					embedding: story.text_embedding
+					collection_name: story.collection_name,
+					search_language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
+					text: story.text
 					//chunks_count: story.chunks.toLocaleString()
 				}))
 			);
@@ -103,8 +102,10 @@
 		/>
 		<svelte:fragment slot="cell" let:row let:cell>
 			{#if cell.key === 'text_embedding'}
-				<Link icon={Launch} href={`/similar/${row.id}?collection=${row.collection}`} target="_blank"
-					>Similar</Link
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${collectionName}`}
+					target="_blank">Similar</Link
 				>
 			{:else}
 				{cell.value}

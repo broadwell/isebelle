@@ -45,7 +45,7 @@ async def get_collection_stories(
     self, collection_id: UUID, start: int, count: int
 ) -> list:
     return await self._pool.fetch(
-        """SELECT story_id, collection_name, search_language, text, text_embedding FROM story
+        """SELECT story_id, collection_name, search_language, text FROM story
             WHERE collection_id = $1 ORDER BY story_id LIMIT $3 OFFSET $2;
         """,
         collection_id,

@@ -11,7 +11,7 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      PUBLIC_API_BASE: /api
+      PUBLIC_API_BASE: /isebelle/api
 
       DB_NAME: ${DB_NAME:?}
       DB_USER: ${DB_USER:?}
@@ -34,13 +34,12 @@ services:
       - ./web-ui:/app:Z
 
     environment:
-      PUBLIC_API_BASE: /api
+      PUBLIC_API_BASE: /isebelle/api
       COREPACK_ENABLE_AUTO_PIN: 0
 
   db:
     container_name: isebelle-db
     image: ankane/pgvector
-
     shm_size: 1g
 
     volumes:

@@ -1,8 +1,8 @@
 <script>
 	import { DataTable, Link, Pagination } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
-	// import { goto } from '$app/navigation';
 
 	let /** @type {Number} */ currentPage = $state(1);
 	let /** @type {Number} */ pageSize = $state(10);
@@ -83,8 +83,10 @@
 	>
 		<svelte:fragment slot="cell" let:row let:cell>
 			{#if cell.key === 'text_embedding'}
-				<Link icon={Launch} href={`/similar/${row.id}?collection=${row.collection}`} target="_blank"
-					>Similar</Link
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${row.collection}`}
+					target="_blank">Similar</Link
 				>
 			{:else}
 				{cell.value}
