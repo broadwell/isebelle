@@ -22,7 +22,7 @@ RUN <<EOF cat >> /stop-supervisor.sh
 #!/usr/bin/env bash
 set -Eeo pipefail
 while read -r; do
-  echo -e "\e[31m Service was stopped or one of it's services crashed,
+  echo -e "\e[31m Service was stopped or one of its services crashed,
             see the logs above for more details. \e[0m" >&2
   kill -SIGTERM "$(cat supervisord.pid)"
 done < /dev/stdin
@@ -47,7 +47,7 @@ stderr_logfile_maxbytes=0
 
 [program:notebook-server]
 directory=/app/
-command=jupyter notebook --allow-root --no-browser --NotebookApp.base_url=/jupyter --NotebookApp.allow_origin='*' --port=8888 --ip=0.0.0.0
+command=jupyter notebook --allow-root --no-browser --ServerApp.base_url=/jupyter --ServerApp.allow_origin='*' --port=8888 --ip=0.0.0.0
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stdout

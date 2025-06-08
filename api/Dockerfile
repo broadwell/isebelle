@@ -47,7 +47,7 @@ stderr_logfile_maxbytes=0
 
 [program:notebook-server]
 directory=/app/
-command=jupyter notebook --allow-root --no-browser --NotebookApp.base_url=/jupyter --NotebookApp.allow_origin='*' --port=8888 --ip=0.0.0.0
+command=jupyter notebook --allow-root --no-browser --ServerApp.base_url=/jupyter --ServerApp.allow_origin='*' --port=8888 --ip=0.0.0.0
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stdout
