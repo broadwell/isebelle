@@ -36,7 +36,7 @@ If you prefer to generate the story embeddings within the Docker containers whil
 The installation steps above (including the Docker setup) should be sufficient to run ISEBELLE on a remote server. Some reverse proxy configuration of the web server may be needed to make the site accessible via the web, however. The following configurations have been successfully used with Apache, although the Jupyter functionality is not fully tested yet.
 
 ```sh
-# Route URLs beginning with /isebelle or /jupyter to the Docker containers
+# Route paths beginning with /isebelle or /jupyter to the Docker containers
 ProxyPass /isebelle http://127.0.0.1:8080/isebelle
 ProxyPass /jupyter http://127.0.0.1:8080/jupyter
 
