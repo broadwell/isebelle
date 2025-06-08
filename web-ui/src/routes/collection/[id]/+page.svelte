@@ -14,7 +14,7 @@
 
 	const headers = [
 		{ key: 'id', value: 'ID' },
-		{ key: 'search_language', value: 'Language' },
+		{ key: 'display_language', value: 'Language' },
 		{ key: 'text', value: 'Text' },
 		{ key: 'text_embedding', value: 'Explore' }
 		//{ key: 'chunk_count', value: 'Chunks' }
@@ -59,7 +59,7 @@
 				data.map((/** @type {StoryRecord} */ story) => ({
 					id: story.story_id,
 					collection_name: story.collection_name,
-					search_language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
+					display_language: story.display_language,
 					text: story.text
 					//chunks_count: story.chunks.toLocaleString()
 				}))

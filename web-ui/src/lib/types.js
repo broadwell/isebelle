@@ -4,7 +4,8 @@
  * @property {string} name
  * @property {string} org_name
  * @property {string} country
- * @property {string} language
+ * @property {string} search_language
+ * @property {string} display_language
  * @property {number} story_count
  * @property {string} created_on
  */
@@ -18,6 +19,7 @@
  * @property {number} total_chunks
  * @property {string} text
  * @property {string} search_language
+ * @property {string} display_language
  * @property {string} text_embedding
  * @property {number} rank
  * @property {number} distance

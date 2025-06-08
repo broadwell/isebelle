@@ -30,13 +30,13 @@ EOL
 `python api/create_collection_embeddings.py --collection-path [PATH_TO_COLLECTION_FOLDER]` 
 but in this case you will need to install the script's dependencies in your local environment.
 1. If the story embeddings have been generated as above, you should load the collection's story texts first by running 
-`just add-collection [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [LANGUAGE]`, then `just add-embeddings [COLLECTION_NAME]` 
+`just add-collection [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [SEARCH_LANGUAGE] [DISPLAY_LANGUAGE]`, then `just add-embeddings [COLLECTION_NAME]` 
 For example,
-`~/isebelle$ just add-collection Evald_Tang_Kristensen "UC Berkeley" Denmark Danish`
+`~/isebelle$ just add-collection Evald_Tang_Kristensen "UC Berkeley" Denmark Danish Dansk`
 then 
 `just add-embeddings Evald_Tang_Kristensen/Evald_Tang_Kristensen.embeddings.gte-multilingual-base.jsonl` 
 If you prefer to generate the story embeddings within the Docker containers while simultaneously importing them along with the story texts, run 
-`just add-collection-and-calculate-embeddings [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [LANGUAGE]` instead.
+`just add-collection-and-calculate-embeddings [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [SEARCH_LANGUAGE] [DISPLAY_LANGUAGE]` instead.
 1. The search and browse interface for the collections and embeddings should be available at [http://localhost:808/isebelle](http://localhost:8080/isebelle)
 
 ## Deploying to a server

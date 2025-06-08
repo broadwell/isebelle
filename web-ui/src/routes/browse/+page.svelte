@@ -28,7 +28,7 @@
 					name: collection.name.replaceAll('_', ' '),
 					org_name: collection.org_name,
 					country: collection.country,
-					language: collection.language.replace(/^./, (str) => str.toUpperCase()),
+					language: collection.display_language,
 					story_count: collection.story_count.toLocaleString()
 				}))
 			)

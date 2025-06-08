@@ -8,11 +8,19 @@ import logging
 import os
 from pathlib import Path
 
-from isebelle_db import IsebelleDb
 from rich.logging import RichHandler
 
-# Map lowercase language names to 3-letter ISO codes
-LANGUAGES = {"danish": "dan", "icelandic": "isl"}
+from isebelle_db import IsebelleDb
+
+# Map lowercase language names to 2+2-letter ISO codes
+LANGUAGES = {
+    "danish": "da",
+    "icelandic": "is",
+    "dutch": "nl",
+    "german": "de",
+    "low german": "nds",
+    "flemish": "nld",
+}
 
 
 async def main() -> None:
@@ -34,7 +42,8 @@ async def main() -> None:
     parser.add_argument("--collection-path", action="store", required=True)
     parser.add_argument("--organization", action="store", required=True)
     parser.add_argument("--country", action="store", required=True)
-    parser.add_argument("--language", action="store", required=True)
+    parser.add_argument("--search-language", action="store", required=True)
+    parser.add_argument("--display-language", action="store", required=True)
 
     parser.add_argument(
         "--calculate-embeddings",
@@ -59,7 +68,7 @@ async def main() -> None:
     # so sub-colllections, e.g., Verhalenbank Frisian, will need to be loaded
     # separately. But eventually the records may be parsed directly from the
     # XML, allowing more than one language per collection.
-    collection_language = args.language.lower()
+    collection_language = args.search_language.lower()
     assert collection_language in LANGUAGES, (
         f"'{collection_language}' language not supported"
     )
@@ -74,7 +83,8 @@ async def main() -> None:
         collection_name,
         args.organization,
         args.country,
-        args.language.lower(),
+        args.search_language,
+        args.display_language,
     )
 
     logging.info("Loading story texts into the DB")
@@ -86,6 +96,7 @@ async def main() -> None:
         Path(collection_path, "texts"),
         collection_language,
         LANGUAGES[collection_language],
+        args.display_language,
         calculate_embeddings=args.calculate_embeddings,
     )
 

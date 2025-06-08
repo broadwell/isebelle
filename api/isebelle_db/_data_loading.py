@@ -36,12 +36,13 @@ async def add_collection(
     collection_name: str,
     org_name: str,
     country: str,
-    language: str,
+    search_language: str,
+    display_language: str,
 ) -> UUID:
     collection_id = await self._pool.fetchval(
         """
         INSERT
-            INTO collection (name, org_name, country, language)
+            INTO collection (name, org_name, country, search_language, display_language)
             VALUES ($1, $2, $3, $4)
             RETURNING id
         ;
@@ -49,7 +50,8 @@ async def add_collection(
         collection_name,
         org_name,
         country,
-        language,
+        search_language,
+        display_language,
     )
 
     if not isinstance(collection_id, UUID):
@@ -63,8 +65,9 @@ async def load_stories(
     collection_id: UUID,
     collection_name: str,
     texts_path: Path,
-    language: str,
+    search_language: str,
     language_code: str,
+    display_language: str,
     clear=False,
     reindex=True,
     calculate_embeddings=False,
@@ -96,7 +99,8 @@ async def load_stories(
                 story_id,
                 language_code,
                 story_text,
-                language,
+                search_language,
+                display_language,
             ]
         )
 
@@ -111,7 +115,7 @@ async def load_stories(
                 await self._pool.executemany(
                     """
                     INSERT INTO story (
-                        collection_id, collection_name, story_id, language_iso_639_3, text, search_language, text_embedding)
+                        collection_id, collection_name, story_id, language_iso_639, text, search_language, display_language, text_embedding)
                         VALUES($1, $2, $3, $4, $5, $6, $7)
                     ;
                     """,
@@ -122,7 +126,7 @@ async def load_stories(
                 await self._pool.executemany(
                     """
                     INSERT INTO story (
-                        collection_id, collection_name, story_id, language_iso_639_3, text, search_language)
+                        collection_id, collection_name, story_id, language_iso_639, text, search_language, display_language)
                         VALUES($1, $2, $3, $4, $5, $6)
                     ;
                     """,
@@ -145,7 +149,7 @@ async def load_stories(
 
     logging.info("Tokenizing story texts for lexical search...")
     await self._pool.execute(
-        f"UPDATE story SET search_text = to_tsvector('{language}', text) WHERE collection_id = $1;",
+        f"UPDATE story SET search_text = to_tsvector('{search_language}', text) WHERE collection_id = $1;",
         collection_id,
     )
 

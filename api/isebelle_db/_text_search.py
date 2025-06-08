@@ -15,6 +15,7 @@ async def lexical_search(
             story_id,
             collection_name
             search_language,
+            display_language,
             text,
             ts_rank(search_text, query) AS rank
         FROM story, to_tsquery('{language}', '{query}') AS query
@@ -58,6 +59,7 @@ async def search_embeddings(
             story_id,
             text,
             search_language,
+            display_language,
             {distance} AS distance
         FROM story
         WHERE {coll_query}
@@ -93,6 +95,7 @@ async def similar_embeddings(
             story_id,
             text,
             search_language,
+            display_language,
             {distance} AS distance
         FROM story
         ORDER BY distance

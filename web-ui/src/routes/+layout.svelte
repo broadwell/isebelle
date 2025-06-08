@@ -62,10 +62,16 @@
 			icon={LogoJupyter}
 			text="Notebooks"
 			href="/jupyter/tree/notebooks/"
+			target="_blank"
 			isSelected={$page.url.pathname == `/jupyter/tree/notebooks/`}
 		/>
 		<SideNavDivider />
-		<SideNavLink icon={LogoGithub} text="GitHub" href="https://github.com/broadwell/isebelle" />
+		<SideNavLink
+			icon={LogoGithub}
+			text="GitHub"
+			href="https://github.com/broadwell/isebelle"
+			target="_blank"
+		/>
 	</SideNavItems>
 </SideNav>
 

@@ -14,6 +14,7 @@
 
 	const headers = [
 		{ key: 'id', value: 'ID' },
+		{ key: 'language', value: 'Language' },
 		{ key: 'text', value: 'Text' },
 		{ key: 'rank', value: 'Search Rank' },
 		{ key: 'text_embedding', value: 'Explore' }
@@ -40,10 +41,10 @@
 		);
 
 		collectionName = collectionInfo.name.replaceAll('_', ' ');
-		const collectionLanguage = collectionInfo.language;
+		const searchLanguage = collectionInfo.search_language;
 
 		matchingRows = await fetch(
-			`${$page.data.apiBase}/lexical_search/${collectionId}/${searchQuery}/${collectionLanguage}/10000`
+			`${$page.data.apiBase}/lexical_search/${collectionId}/${searchQuery}/${searchLanguage}/10000`
 		)
 			.then((data) => data.json())
 			.then((data) =>
@@ -51,6 +52,7 @@
 					id: story.story_id,
 					text: story.text,
 					text_embedding: story.text_embedding,
+					language: story.display_language,
 					rank: Math.round(story.rank * 1000) / 1000
 					//chunks_count: story.chunks.toLocaleString()
 				}))

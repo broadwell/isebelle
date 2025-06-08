@@ -14,7 +14,8 @@ async def initialize_db(conn, drop=False) -> None:
             name VARCHAR(150) UNIQUE NOT NULL,
             org_name VARCHAR(150) NOT NULL,
             country VARCHAR(150) NOT NULL,
-            language VARCHAR(32) NOT NULL,
+            search_language VARCHAR(32) NOT NULL,
+            display_language VARCHAR(32) NOT NULL,
             story_count INTEGER NOT NULL DEFAULT 0,
             created_on TIMESTAMP NOT NULL DEFAULT NOW()
         )
@@ -28,8 +29,9 @@ async def initialize_db(conn, drop=False) -> None:
             collection_id uuid NOT NULL REFERENCES collection(id),
             collection_name VARCHAR(150) NOT NULL REFERENCES collection(name),
             story_id VARCHAR(150) UNIQUE NOT NULL,
-            language_iso_639_3 VARCHAR(3) NOT NULL,
+            language_iso_639 VARCHAR(5) NOT NULL,
             text TEXT NOT NULL,
+            display_language VARCHAR(32) NOT NULL,
             search_language VARCHAR(32) NOT NULL,
             search_text tsvector,
             text_embedding vector(768) DEFAULT NULL,

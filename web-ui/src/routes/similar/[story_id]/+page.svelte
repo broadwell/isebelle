@@ -45,7 +45,7 @@
 				data.map((/** @type {StoryRecord} */ story) => ({
 					collection: story.collection_name,
 					id: story.story_id,
-					language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
+					language: story.display_language,
 					text: story.text,
 					similarity: `${Math.round((1 - story.distance) * 10000) / 100}%`,
 					embedding: story.text_embedding
@@ -70,7 +70,7 @@
 		on:update={updatePagination}
 	/>
 	<DataTable
-		title={'Matching stories in the selected collections'}
+		title={'Similar stories in the selected collections'}
 		description="Similar to story {storyId} from {storyCollectionName.replaceAll('_', ' ')}"
 		zebra
 		size="tall"

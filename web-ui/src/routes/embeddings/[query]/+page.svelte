@@ -74,7 +74,7 @@
 		on:update={updatePagination}
 	/>
 	<DataTable
-		title={'Matching stories in the selected collections'}
+		title={'Similar stories in the selected collections'}
 		description="Search text: {searchQuery}"
 		zebra
 		size="tall"
