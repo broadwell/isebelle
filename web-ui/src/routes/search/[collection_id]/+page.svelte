@@ -1,7 +1,6 @@
 <script>
 	import { DataTable, Pagination } from 'carbon-components-svelte';
 	import { page } from '$app/stores';
-	// import { goto } from '$app/navigation';
 
 	let /** @type {Number} */ currentPage = $state(1);
 	let /** @type {Number} */ pageSize = $state(10);

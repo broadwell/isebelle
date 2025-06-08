@@ -1,6 +1,7 @@
 <script>
 	import { DataTable, Link, Pagination, Search } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -21,7 +22,7 @@
 	];
 
 	const searchTexts = () => {
-		goto(`/search/${collectionId}?query=${searchQuery}&limit=10000`);
+		goto(`${base}/search/${collectionId}?query=${searchQuery}&limit=10000`);
 	};
 
 	const updatePagination = (/** @type {CustomEvent} */ paginationEvent) => {
@@ -31,7 +32,7 @@
 			paginationEvent.detail.pageSize != searchParams.get('pageSize')
 		)
 			goto(
-				`/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
+				`${base}/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
 			);
 	};
 
@@ -103,8 +104,10 @@
 		/>
 		<svelte:fragment slot="cell" let:row let:cell>
 			{#if cell.key === 'text_embedding'}
-				<Link icon={Launch} href={`/similar/${row.id}?collection=${row.collection}`} target="_blank"
-					>Similar</Link
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${row.collection}`}
+					target="_blank">Similar</Link
 				>
 			{:else}
 				{cell.value}

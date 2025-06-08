@@ -1,5 +1,6 @@
 <script>
 	import { DataTable, Search } from 'carbon-components-svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -15,7 +16,7 @@
 	];
 
 	const searchEmbeddings = () => {
-		goto(`/embeddings/${searchQuery}?collection_ids=${selectedRowIds.join('|')}&limit=1000`);
+		goto(`${base}/embeddings/${searchQuery}?collection_ids=${selectedRowIds.join('|')}&limit=1000`);
 	};
 
 	const getCollectionRows = async () => {
@@ -38,7 +39,7 @@
 	};
 
 	const rowClicked = (/** @type {CustomEvent} */ clickEvent) => {
-		goto(`/collection/${clickEvent.detail.row.id}`);
+		goto(`${base}/collection/${clickEvent.detail.row.id}`);
 	};
 </script>
 
