@@ -40,12 +40,12 @@ default:
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic DROP MAPPING FOR email, url, url_path, sfloat, float;"'
 
 # Load all stories in a collection into the DB
-@add-collection path organization country language:
-  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --language \"$4\""
+@add-collection path organization country search-language display-language:
+  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --search-language \"$4\" --display-language \"$5\""
 
 # Load all stories in a collection into the DB and calculate embeddings on the fly during ingest
 @add-collection-and-calculate-embeddings path organization country language:
-  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --language \"$4\" --calculate-embeddings"
+  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --search-language \"$4\" --display-language \"$5\" --calculate-embeddings"
 
 # Load text embeddings from a JSONlines file named like Collection_Name.embeddings.jsonl
 # Each line in the file should have the format {story_id: [EMBEDDINGS VECTOR]}
