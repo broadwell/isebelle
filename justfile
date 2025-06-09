@@ -9,6 +9,17 @@ default:
 @up:
   docker compose up
 
+# Run the application in detached mode, if you can
+@serve:
+  docker compose up --detach
+
+# Stop all of the containers (assumes only 4 containers at present)
+@stop:
+  docker container stop isebelle-api
+  docker container stop isebelle-web-ui
+  docker container stop isebelle-web-proxy
+  docker container stop isebelle-db
+
 # (Re)build all containers
 @build:
   docker compose build
