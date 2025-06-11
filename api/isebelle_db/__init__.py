@@ -55,10 +55,12 @@ class IsebelleDb:
     def __init__(self, pool: asyncpg.Pool) -> None:
         self._pool = pool
         self.model = SentenceTransformer(
-            "Alibaba-NLP/gte-multilingual-base",
-            trust_remote_code=True,
-            # "Alibaba-NLP/gte-Qwen2-7B-instruct",
+            # "Alibaba-NLP/gte-multilingual-base",
             # trust_remote_code=True,
+            # Maybe try a quantized version, if the
+            # embedding size is the same
+            "Alibaba-NLP/gte-Qwen2-7B-instruct",
+            trust_remote_code=True,
         )
 
     @classmethod

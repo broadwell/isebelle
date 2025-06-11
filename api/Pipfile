@@ -10,6 +10,7 @@ fastapi-utils = "*"
 joblib = ">=1.3.2"
 jsonlines = "*"
 numpy = "*"
+optimum = "*"
 pandas = "*"
 pgvector = "*"
 python-dotenv = "*"
@@ -26,4 +27,4 @@ ipython = "*"
 ruff = "*"
 
 [requires]
-python_version = "3.12"
+python_version = "3.10"

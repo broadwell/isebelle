@@ -1,5 +1,8 @@
 # Some of the stuff we need doesn't work well on Alpine
-FROM python:3.12-slim
+#FROM python:3.12-slim
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+#FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
+#FROM nvcr.io/nvidia/ai-workbench/python-cuda122:1.0.6
 
 WORKDIR /app
 EXPOSE 5000
@@ -11,18 +14,19 @@ ENV PYTHONPATH=$PYTHONPATH:/app
 
 # Install dependencies from apt repos
 # * build-essential takes care of what is needed to build the lap binaries
-# * installing python3-opencv is the easiest way to ensure we have
-#    the needed libraries that will support pip-installed cv2
-RUN apt-get update -qq \
-  && apt-get install -y supervisor build-essential pkg-config \
+ARG DEBIAN_FRONTEND=noninteractive 
+  RUN apt-get update -qq \
+  && apt-get install -y supervisor build-essential pkg-config python3 python3-pip \
   && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Configure supervisord
 RUN <<EOF cat >> /stop-supervisor.sh
 #!/usr/bin/env bash
 set -Eeo pipefail
 while read -r; do
-  echo -e "\e[31m Service was stopped or one of it's services crashed,
+  echo -e "\e[31m Service was stopped or one of its services crashed,
             see the logs above for more details. \e[0m" >&2
   kill -SIGTERM "$(cat supervisord.pid)"
 done < /dev/stdin

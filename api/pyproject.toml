@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 89
-target-version = ['py312']
+target-version = ['py310']
 
 [tool.ruff]
 extend-exclude = ["notebooks"]

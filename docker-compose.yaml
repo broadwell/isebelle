@@ -3,6 +3,14 @@ services:
     container_name: isebelle-api
     build: ./api
 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
     volumes:
       - ./api:/app:Z
       - ${STORIES_SRC_FOLDER:?}:/stories

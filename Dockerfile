@@ -1,5 +1,5 @@
 # Some of the stuff we need doesn't work well on Alpine
-FROM python:3.12-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 EXPOSE 5000
