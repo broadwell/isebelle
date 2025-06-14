@@ -50,6 +50,19 @@ services:
       POSTGRES_USER: ${DB_USER:?}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?}
 
+  ollama:
+    container_name: isebelle-ollama
+    build: ./ollama
+
+    ports: 
+      - 11434:11434
+    volumes:
+      - ./ollama:/root/.ollama
+
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+
   web-proxy:
     &proxy
     profiles:

@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from contextlib import asynccontextmanager
 from uuid import UUID
 
 import uvicorn
@@ -8,8 +9,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_utils.timing import add_timing_middleware
-from isebelle_db import IsebelleDb
 
+from isebelle_db import IsebelleDb
 from lib.json_encoder import IsebelleJSONEncoder
 
 load_dotenv()
@@ -30,9 +31,18 @@ except AssertionError:
 logging.basicConfig(level=(os.getenv("LOG_LEVEL") or "INFO").upper())
 logger = logging.getLogger(__name__)
 
-isebelle_api = FastAPI(root_path=os.environ.get("PUBLIC_API_BASE", "/"))
-add_timing_middleware(isebelle_api, record=logger.debug, prefix="api")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    isebelle_api.state.db = await IsebelleDb.create(drop=False)
+    yield
+    pass
+
+
+isebelle_api = FastAPI(
+    root_path=os.environ.get("PUBLIC_API_BASE", "/"), lifespan=lifespan
+)
+add_timing_middleware(isebelle_api, record=logger.debug, prefix="api")
 
 isebelle_api.add_middleware(
     CORSMiddleware,
@@ -41,11 +51,6 @@ isebelle_api.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@isebelle_api.on_event("startup")
-async def startup():
-    isebelle_api.state.db = await IsebelleDb.create(drop=False)
 
 
 @isebelle_api.get("/")

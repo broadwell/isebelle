@@ -19,6 +19,7 @@ default:
   docker container stop isebelle-web-ui
   docker container stop isebelle-web-proxy
   docker container stop isebelle-db
+  docker container stop isebelle-ollama
 
 # (Re)build all containers
 @build:
