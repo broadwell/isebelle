@@ -1,6 +1,8 @@
 from typing import Set
 from uuid import UUID
 
+import requests
+
 # Lexical search:
 # select story_id, text, ts_rank(search_text, query) AS rank FROM story, to_tsquery('danish', 'nis') query WHERE search_text @@ query ORDER by rank DESC LIMIT 1;
 # Can also consider using ts_headline() to generate KWIC excerpts
@@ -35,7 +37,14 @@ async def search_embeddings(
     limit: int = 50,
 ) -> list:
     # Get embedding of input text
-    query_embedding = self.model.encode([text_query], batch_size=1)[0].tolist()
+    # From quantized model running in the Ollama container
+    # query_embedding = self.model.encode([text_query], batch_size=1)[0].tolist()
+    embedding_respose = requests.post(
+        "http://localhost:11434/api/embed",
+        data={"model": "since2006/gte-Qwen2-7B-instruct:Q4_K_M", "input": text_query},
+    ).json()
+
+    query_embedding = embedding_respose["embeddings"][0]
 
     """Search for nearest texts in the database"""
     distance = f"text_embedding <=> '{query_embedding}'"

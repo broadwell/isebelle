@@ -34,7 +34,7 @@ async def initialize_db(conn, drop=False) -> None:
             display_language VARCHAR(32) NOT NULL,
             search_language VARCHAR(32) NOT NULL,
             search_text tsvector,
-            text_embedding vector(768) DEFAULT NULL,
+            text_embedding vector(3584) DEFAULT NULL,
             PRIMARY KEY(collection_id, story_id)
         )
         ;
