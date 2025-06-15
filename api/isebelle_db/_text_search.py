@@ -46,7 +46,7 @@ async def search_embeddings(
     query_embedding = embedding_respose["embeddings"][0]
 
     """Search for nearest texts in the database"""
-    distance = f"text_embedding <=> '{query_embedding}'"
+    distance = f"text_embedding <=> '{query_embedding}'::halfvec"
 
     if len(collections) > 1:
         coll_query = f"collection_id IN {tuple(collections)}"

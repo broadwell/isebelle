@@ -43,9 +43,9 @@ default:
 
 # Needs to be done once after building the DB container; thanks to https://bjornbr.is/postgres-full-text-search-in-icelandic/
 @build-icelandic-dictionary:
-  docker cp db-dict-files/icelandic.stop isebelle-db:/usr/share/postgresql/15/tsearch_data
-  docker cp db-dict-files/is_is.affix isebelle-db:/usr/share/postgresql/15/tsearch_data
-  docker cp db-dict-files/is_is.dict isebelle-db:/usr/share/postgresql/15/tsearch_data
+  docker cp db-dict-files/icelandic.stop isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/is_is.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/is_is.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
   docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY icelandic_hunspell (TEMPLATE = ispell, DictFile = is_is, AffFile = is_is, Stopwords = icelandic);"'
   docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.icelandic ( COPY = pg_catalog.english );"'  
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH icelandic_hunspell, simple;"'
