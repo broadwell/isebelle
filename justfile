@@ -42,6 +42,7 @@ default:
   docker compose exec -T api python -c 'import asyncio;from isebelle_db import IsebelleDb;asyncio.run(IsebelleDb.create(drop=True))'
 
 # Needs to be done once after building the DB container; thanks to https://bjornbr.is/postgres-full-text-search-in-icelandic/
+# and https://www.cs.hmc.edu/~geoff/ispell-dictionaries.html
 @build-icelandic-dictionary:
   docker cp db-dict-files/icelandic.stop isebelle-db:/usr/share/postgresql/17/tsearch_data
   docker cp db-dict-files/is_is.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
@@ -50,6 +51,14 @@ default:
   docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.icelandic ( COPY = pg_catalog.english );"'  
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH icelandic_hunspell, simple;"'
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic DROP MAPPING FOR email, url, url_path, sfloat, float;"'
+
+@build-frisian-dictionary:
+  docker cp db-dict-files/fy_fy.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/fy_fy.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY frisian_hunspell (TEMPLATE = ispell, DictFile = fy_fy, AffFile = fy_fy);"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.frisian ( COPY = pg_catalog.english );"'  
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH frisian_hunspell, simple;"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian DROP MAPPING FOR email, url, url_path, sfloat, float;"'
 
 # Load all stories in a collection into the DB
 @add-collection path organization country search-language display-language:
