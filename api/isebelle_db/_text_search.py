@@ -82,6 +82,7 @@ async def similar_embeddings(
     self,
     story_id: str,
     collection_name: str,
+    collections: Set[UUID],
     limit: int = 50,
 ) -> list:
     # Get embedding of input text
@@ -95,6 +96,17 @@ async def similar_embeddings(
     """Search for nearest texts in the database"""
     distance = f"text_embedding <=> ({distance_subquery})"
 
+    if len(collections) > 1:
+        coll_query = f"collection_id IN {tuple(collections)}"
+    elif len(collections) == 1:
+        coll_item = list(collections)[0]
+        if coll_item == "NONE":
+            return []
+        else:
+            coll_query = f"collection_id = UUID('{coll_item}')"
+    else:
+        coll_query = "TRUE"
+
     return await self._pool.fetch(
         f"""
         SELECT
@@ -106,6 +118,7 @@ async def similar_embeddings(
             display_language,
             {distance} AS distance
         FROM story
+        WHERE {coll_query}
         ORDER BY distance
         LIMIT $1
         """,

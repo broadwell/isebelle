@@ -120,12 +120,18 @@ async def search_embeddings(query: str, collections: str, limit: int, request: R
     )
 
 
-@isebelle_api.get("/similar_embeddings/{story_id}/{collection}/{limit}")
+@isebelle_api.get(
+    "/similar_embeddings/{story_id}/{collection_name}/{collections}/{limit}"
+)
 async def similar_embeddings(
-    story_id: str, collection: str, limit: int, request: Request
+    story_id: str, collection_name: str, collections: str, limit: int, request: Request
 ):
+    if collections == "|":
+        colls = set()
+    else:
+        colls = set(collections.split("|"))
     matching_stories = await request.app.state.db.similar_embeddings(
-        story_id, collection, limit
+        story_id, collection_name, colls, limit
     )
     return Response(
         content=json.dumps(matching_stories, cls=IsebelleJSONEncoder),
