@@ -57,10 +57,3 @@ async def initialize_db(conn, drop=False) -> None:
     #     ;
     #     """
     # )
-
-
-# XXX Maybe shouldn't call this file _initialization if this will be here
-async def remove_collection(self, collection_id) -> None:
-    async with self._pool.acquire() as conn:
-        logging.warning("Removing database entries associated with collection")
-        await conn.execute("DELETE FROM collection WHERE id=$1", collection_id)

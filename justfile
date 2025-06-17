@@ -81,6 +81,10 @@ default:
 @add-embeddings path:
   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_embeddings.py --embeddings-path \"\$STORIES_SRC_FOLDER/$1\""
 
+@delete-collection collection_name:
+  docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM story WHERE collection_name='$1\';\""
+  docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM collection WHERE name='$1';\""
+
 # Refresh PostgreSQL materialized views
 # @refresh-db-views:
 #   docker compose exec -T db sh -c 'psql -U isebelle -c "REFRESH MATERIALIZED VIEW CONCURRENTLY story_meta;"'
