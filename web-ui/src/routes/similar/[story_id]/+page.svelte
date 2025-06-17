@@ -139,7 +139,11 @@
 			</svelte:fragment>
 		</DataTable>
 		{#if rows.length === 0}
-			<p>Unable to find any stories that are close semantic matches.</p>
+			<p class="no-luck">
+				Unable to find any stories that are close semantic matches.<br />You may wish to try
+				expanding your query with further terms.<br />Including evocative phrases, nouns, verbs and
+				adjectives can be helpful.
+			</p>
 		{/if}
 	{/await}
 {/await}
@@ -148,5 +152,11 @@
 	.control-board {
 		display: flex;
 		flex-direction: row;
+	}
+	.no-luck {
+		padding: 10px 0 0 0;
+		text-align: center;
+		font-weight: bold;
+		color: maroon;
 	}
 </style>
