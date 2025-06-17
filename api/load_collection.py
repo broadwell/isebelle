@@ -22,6 +22,7 @@ LANGUAGES = {
     "flemish": "nld",
     "norwegian": "nn-NO",
     "frisian": "fy",
+    "low_german": "nds",
 }
 
 
