@@ -6,7 +6,6 @@ import os
 import asyncpg
 from dotenv import load_dotenv
 from pgvector.asyncpg import register_vector
-from sentence_transformers import SentenceTransformer
 
 logging.getLogger("dotenv.main").setLevel(logging.FATAL)
 load_dotenv()
@@ -54,12 +53,6 @@ class IsebelleDb:
 
     def __init__(self, pool: asyncpg.Pool) -> None:
         self._pool = pool
-        # self.model = SentenceTransformer(
-        #     "Alibaba-NLP/gte-multilingual-base",
-        #     trust_remote_code=True,
-        #     "Alibaba-NLP/gte-Qwen2-7B-instruct",
-        #     trust_remote_code=True,
-        # )
 
     @classmethod
     async def create(cls, drop=False) -> "IsebelleDb":
