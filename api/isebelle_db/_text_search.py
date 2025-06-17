@@ -71,6 +71,7 @@ async def search_embeddings(
             {distance} AS distance
         FROM story
         WHERE {coll_query}
+        AND LENGTH(text) > 100
         ORDER BY distance
         LIMIT $1
         """,
@@ -119,6 +120,7 @@ async def similar_embeddings(
             {distance} AS distance
         FROM story
         WHERE {coll_query}
+        AND LENGTH(text) > 100
         ORDER BY distance
         LIMIT $1
         """,

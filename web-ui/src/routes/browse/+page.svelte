@@ -1,5 +1,5 @@
 <script>
-	import { DataTable, Search } from 'carbon-components-svelte';
+	import { DataTable, Search, ProgressBar } from 'carbon-components-svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -45,7 +45,7 @@
 </script>
 
 {#await getCollectionRows()}
-	<p>Loading...</p>
+	<ProgressBar helperText="Loading..." />
 {:then rows}
 	<DataTable
 		title="Search and Browse Collections"

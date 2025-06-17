@@ -1,5 +1,5 @@
 <script>
-	import { DataTable, Link, Pagination, Search } from 'carbon-components-svelte';
+	import { DataTable, Link, Pagination, Search, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
@@ -61,19 +61,13 @@
 					collection_name: story.collection_name,
 					display_language: story.display_language,
 					text: story.text
-					//chunks_count: story.chunks.toLocaleString()
 				}))
 			);
 	};
-
-	// const rowClicked = (/** @type {CustomEvent} */ clickEvent) => {
-	// 	goto(`/collection/${clickEvent.detail.row.id}`);
-	// };
-	// 	on:click={rowClicked}
 </script>
 
 {#await getStoryRows()}
-	<p>Loading...</p>
+	<ProgressBar helperText="Loading..." />
 {:then rows}
 	<Pagination
 		totalItems={totalCollectionStories}

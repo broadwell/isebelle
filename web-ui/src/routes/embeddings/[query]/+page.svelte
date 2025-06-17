@@ -1,5 +1,5 @@
 <script>
-	import { DataTable, Link, MultiSelect, Pagination } from 'carbon-components-svelte';
+	import { DataTable, Link, MultiSelect, Pagination, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
@@ -96,7 +96,9 @@
 </script>
 
 {#await getCollectionRows() then colls}
-	{#await getStoryRows() then rows}
+	{#await getStoryRows()}
+		<ProgressBar helperText="Searching for similar stories..." />
+	{:then rows}
 		<div class="control-board">
 			<Pagination
 				totalItems={totalMatchingStories}
@@ -133,6 +135,13 @@
 				{/if}
 			</svelte:fragment>
 		</DataTable>
+		{#if rows.length === 0}
+			<p class="no-luck">
+				Unable to find any stories that are close semantic matches.<br />You may wish to try
+				expanding your query with further terms.<br />Including evocative phrases, nouns, verbs and
+				adjectives can be helpful.
+			</p>
+		{/if}
 	{/await}
 {/await}
 
@@ -140,5 +149,11 @@
 	.control-board {
 		display: flex;
 		flex-direction: row;
+	}
+	.no-luck {
+		padding: 10px 0 0 0;
+		text-align: center;
+		font-weight: bold;
+		color: maroon;
 	}
 </style>

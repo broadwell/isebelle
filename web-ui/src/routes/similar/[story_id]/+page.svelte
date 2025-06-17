@@ -1,5 +1,5 @@
 <script>
-	import { DataTable, Link, MultiSelect, Pagination } from 'carbon-components-svelte';
+	import { DataTable, Link, MultiSelect, Pagination, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
@@ -99,7 +99,9 @@
 </script>
 
 {#await getCollectionRows() then colls}
-	{#await getStoryRows() then rows}
+	{#await getStoryRows()}
+		<ProgressBar helperText="Searching for similar stories..." />
+	{:then rows}
 		<div class="control-board">
 			<Pagination
 				totalItems={totalMatchingStories}
@@ -136,6 +138,9 @@
 				{/if}
 			</svelte:fragment>
 		</DataTable>
+		{#if rows.length === 0}
+			<p>Unable to find any stories that are close semantic matches.</p>
+		{/if}
 	{/await}
 {/await}
 

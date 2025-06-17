@@ -1,5 +1,5 @@
 <script>
-	import { DataTable, Link, Pagination } from 'carbon-components-svelte';
+	import { DataTable, Link, Pagination, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
@@ -18,7 +18,6 @@
 		{ key: 'text', value: 'Text' },
 		{ key: 'rank', value: 'Search Rank' },
 		{ key: 'text_embedding', value: 'Explore' }
-		//{ key: 'chunk_count', value: 'Chunks' }
 	];
 
 	const updatePagination = (/** @type {CustomEvent} */ paginationEvent) => {
@@ -65,7 +64,7 @@
 </script>
 
 {#await getStoryRows()}
-	<p>Loading...</p>
+	<ProgressBar helperText="Searching for stories..." />
 {:then rows}
 	<Pagination
 		totalItems={totalMatchingStories}
