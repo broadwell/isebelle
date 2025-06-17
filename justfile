@@ -60,6 +60,14 @@ default:
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH frisian_hunspell, simple;"'
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian DROP MAPPING FOR email, url, url_path, sfloat, float;"'
 
+@build-low-german-dictionary:
+  docker cp db-dict-files/nds.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/nds.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY low_german_hunspell (TEMPLATE = ispell, DictFile = nds, AffFile = nds);"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.low_german ( COPY = pg_catalog.english );"'  
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION low_german ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH low_german_hunspell, simple;"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION low_german DROP MAPPING FOR email, url, url_path, sfloat, float;"'
+
 # Load all stories in a collection into the DB
 @add-collection path organization country search-language display-language:
   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --search-language \"$4\" --display-language \"$5\""
