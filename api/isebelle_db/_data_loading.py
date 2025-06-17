@@ -6,26 +6,6 @@ import jsonlines
 
 STORY_BATCH_SIZE = 100
 
-# async def add_story(self, story_id: str, story_metadata: dict) -> UUID:
-#     video_id = await self._pool.fetchval(
-#         """
-#         INSERT
-#             INTO video (video_name, frame_count, fps, width, height)
-#             VALUES($1, $2, $3, $4, $5)
-#             ON CONFLICT (video_name) DO UPDATE
-#             SET frame_count = $2, fps = $3, width = $4, height = $5
-#             RETURNING id
-#         ;
-#         """,
-#         story_id,
-#         *story_metadata.values(),
-#     )
-
-#     if not isinstance(video_id, UUID):
-#         raise ValueError(f"Unable to add story '{story_id}'")
-
-#     return video_id
-
 
 async def clear_stories(self, collection_id: UUID) -> None:
     await self._pool.execute("DELETE FROM collection WHERE id = $1;", collection_id)
@@ -205,7 +185,7 @@ async def load_embeddings(
         await self._pool.execute(
             """
             CREATE INDEX ON story
-            USING ivfflat (text_embedding vector_cosine_ops)
+            USING ivfflat (text_embedding halfvec_cosine_ops)
             ;
             """,
         )

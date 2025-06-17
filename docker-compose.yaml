@@ -39,8 +39,11 @@ services:
 
   db:
     container_name: isebelle-db
-    image: ankane/pgvector
+    image: pgvector/pgvector:0.8.0-pg17
     shm_size: 1g
+
+    command: >
+      -c maintenance_work_mem=96MB
 
     volumes:
       - isebelle-db-data:/var/lib/postgresql/data
@@ -49,6 +52,19 @@ services:
       POSTGRES_DB: ${DB_NAME:?}
       POSTGRES_USER: ${DB_USER:?}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?}
+
+  ollama:
+    container_name: isebelle-ollama
+    build: ./ollama
+
+    ports: 
+      - 11434:11434
+    volumes:
+      - ./ollama:/root/.ollama
+
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
 
   web-proxy:
     &proxy

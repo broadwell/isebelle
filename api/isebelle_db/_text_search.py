@@ -1,8 +1,9 @@
+import json
 from typing import Set
 from uuid import UUID
 
-# Lexical search:
-# select story_id, text, ts_rank(search_text, query) AS rank FROM story, to_tsquery('danish', 'nis') query WHERE search_text @@ query ORDER by rank DESC LIMIT 1;
+import requests
+
 # Can also consider using ts_headline() to generate KWIC excerpts
 
 
@@ -35,10 +36,17 @@ async def search_embeddings(
     limit: int = 50,
 ) -> list:
     # Get embedding of input text
-    query_embedding = self.model.encode([text_query], batch_size=1)[0].tolist()
+    # From quantized model running in the Ollama container
+    headers = {"Content-Type": "application/json"}
+    data = {"model": "since2006/gte-Qwen2-7B-instruct:Q4_K_M", "input": text_query}
+    embedding_respose = requests.post(
+        "http://ollama:11434/api/embed", headers=headers, data=json.dumps(data)
+    ).json()
+
+    query_embedding = embedding_respose["embeddings"][0]
 
     """Search for nearest texts in the database"""
-    distance = f"text_embedding <=> '{query_embedding}'"
+    distance = f"text_embedding <=> '{query_embedding}'::halfvec"
 
     if len(collections) > 1:
         coll_query = f"collection_id IN {tuple(collections)}"
@@ -63,6 +71,7 @@ async def search_embeddings(
             {distance} AS distance
         FROM story
         WHERE {coll_query}
+        AND LENGTH(text) > 100
         ORDER BY distance
         LIMIT $1
         """,
@@ -74,6 +83,7 @@ async def similar_embeddings(
     self,
     story_id: str,
     collection_name: str,
+    collections: Set[UUID],
     limit: int = 50,
 ) -> list:
     # Get embedding of input text
@@ -87,6 +97,17 @@ async def similar_embeddings(
     """Search for nearest texts in the database"""
     distance = f"text_embedding <=> ({distance_subquery})"
 
+    if len(collections) > 1:
+        coll_query = f"collection_id IN {tuple(collections)}"
+    elif len(collections) == 1:
+        coll_item = list(collections)[0]
+        if coll_item == "NONE":
+            return []
+        else:
+            coll_query = f"collection_id = UUID('{coll_item}')"
+    else:
+        coll_query = "TRUE"
+
     return await self._pool.fetch(
         f"""
         SELECT
@@ -98,6 +119,8 @@ async def similar_embeddings(
             display_language,
             {distance} AS distance
         FROM story
+        WHERE {coll_query}
+        AND LENGTH(text) > 100
         ORDER BY distance
         LIMIT $1
         """,

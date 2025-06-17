@@ -54,12 +54,12 @@ class IsebelleDb:
 
     def __init__(self, pool: asyncpg.Pool) -> None:
         self._pool = pool
-        self.model = SentenceTransformer(
-            "Alibaba-NLP/gte-multilingual-base",
-            trust_remote_code=True,
-            # "Alibaba-NLP/gte-Qwen2-7B-instruct",
-            # trust_remote_code=True,
-        )
+        # self.model = SentenceTransformer(
+        #     "Alibaba-NLP/gte-multilingual-base",
+        #     trust_remote_code=True,
+        #     "Alibaba-NLP/gte-Qwen2-7B-instruct",
+        #     trust_remote_code=True,
+        # )
 
     @classmethod
     async def create(cls, drop=False) -> "IsebelleDb":

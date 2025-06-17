@@ -14,8 +14,8 @@ from sentence_transformers import SentenceTransformer
 
 BATCH_SIZE = 5
 
-model_name = "Alibaba-NLP/gte-multilingual-base"
-# model_name = "Alibaba-NLP/gte-Qwen2-7B-instruct"
+# model_name = "Alibaba-NLP/gte-multilingual-base"
+model_name = "Alibaba-NLP/gte-Qwen2-7B-instruct"
 model_slug = model_name.split("/")[-1]
 
 model = SentenceTransformer(model_name, trust_remote_code=True)

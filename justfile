@@ -19,6 +19,7 @@ default:
   docker container stop isebelle-web-ui
   docker container stop isebelle-web-proxy
   docker container stop isebelle-db
+  docker container stop isebelle-ollama
 
 # (Re)build all containers
 @build:
@@ -41,14 +42,31 @@ default:
   docker compose exec -T api python -c 'import asyncio;from isebelle_db import IsebelleDb;asyncio.run(IsebelleDb.create(drop=True))'
 
 # Needs to be done once after building the DB container; thanks to https://bjornbr.is/postgres-full-text-search-in-icelandic/
+# and https://www.cs.hmc.edu/~geoff/ispell-dictionaries.html
 @build-icelandic-dictionary:
-  docker cp db-dict-files/icelandic.stop isebelle-db:/usr/share/postgresql/15/tsearch_data
-  docker cp db-dict-files/is_is.affix isebelle-db:/usr/share/postgresql/15/tsearch_data
-  docker cp db-dict-files/is_is.dict isebelle-db:/usr/share/postgresql/15/tsearch_data
+  docker cp db-dict-files/icelandic.stop isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/is_is.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/is_is.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
   docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY icelandic_hunspell (TEMPLATE = ispell, DictFile = is_is, AffFile = is_is, Stopwords = icelandic);"'
   docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.icelandic ( COPY = pg_catalog.english );"'  
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH icelandic_hunspell, simple;"'
   docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION icelandic DROP MAPPING FOR email, url, url_path, sfloat, float;"'
+
+@build-frisian-dictionary:
+  docker cp db-dict-files/fy_fy.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/fy_fy.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY frisian_hunspell (TEMPLATE = ispell, DictFile = fy_fy, AffFile = fy_fy);"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.frisian ( COPY = pg_catalog.english );"'  
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH frisian_hunspell, simple;"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION frisian DROP MAPPING FOR email, url, url_path, sfloat, float;"'
+
+@build-low-german-dictionary:
+  docker cp db-dict-files/nds.affix isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker cp db-dict-files/nds.dict isebelle-db:/usr/share/postgresql/17/tsearch_data
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH DICTIONARY low_german_hunspell (TEMPLATE = ispell, DictFile = nds, AffFile = nds);"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "CREATE TEXT SEARCH CONFIGURATION public.low_german ( COPY = pg_catalog.english );"'  
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION low_german ALTER MAPPING FOR asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH low_german_hunspell, simple;"'
+  docker compose exec -T db sh -c 'psql -U isebelle -c "ALTER TEXT SEARCH CONFIGURATION low_german DROP MAPPING FOR email, url, url_path, sfloat, float;"'
 
 # Load all stories in a collection into the DB
 @add-collection path organization country search-language display-language:
@@ -62,6 +80,10 @@ default:
 # Each line in the file should have the format {story_id: [EMBEDDINGS VECTOR]}
 @add-embeddings path:
   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_embeddings.py --embeddings-path \"\$STORIES_SRC_FOLDER/$1\""
+
+@delete-collection collection_name:
+  docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM story WHERE collection_name='$1\';\""
+  docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM collection WHERE name='$1';\""
 
 # Refresh PostgreSQL materialized views
 # @refresh-db-views:
