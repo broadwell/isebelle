@@ -33,7 +33,7 @@ class IsebelleDb:
         load_embeddings,
         load_stories,
     )
-    from isebelle_db._initialization import initialize_db, remove_collection
+    from isebelle_db._initialization import initialize_db
     from isebelle_db._read_only import (
         get_available_collections,
         get_collection,
