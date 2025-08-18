@@ -32,6 +32,7 @@ class IsebelleDb:
         clear_stories,
         load_embeddings,
         load_stories,
+        load_stories_xml,
     )
     from isebelle_db._initialization import initialize_db
     from isebelle_db._read_only import (
