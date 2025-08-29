@@ -52,3 +52,22 @@ async def get_collection_stories(
         start,
         count,
     )
+
+
+async def get_collection_places(self, collection_id: UUID) -> list:
+    return await self._pool.fetch(
+        """
+        WITH collection_stories AS (
+            SELECT DISTINCT story_id FROM story WHERE collection_id = $1
+        ), collection_places AS (
+            SELECT place_id, roles, count(collection_stories.story_id) AS story_count FROM story_place
+                LEFT JOIN collection_stories ON story_place.story_id = collection_stories.story_id
+                GROUP BY place_id, roles
+        )
+        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_places.roles, collection_places.story_count
+            FROM collection_places, place
+            WHERE collection_places.place_id=place.place_id
+        ;
+        """,
+        collection_id,
+    )

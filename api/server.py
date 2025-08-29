@@ -97,6 +97,15 @@ async def collection_stories(
     )
 
 
+@isebelle_api.get("/collection_places/{collection_id}")
+async def collection_places(collection_id: UUID, request: Request):
+    collection_stories = await request.app.state.db.get_collection_places(collection_id)
+    return Response(
+        content=json.dumps(collection_stories, cls=IsebelleJSONEncoder),
+        media_type="application/json",
+    )
+
+
 @isebelle_api.get("/lexical_search/{collection_id}/{query}/{language}/{limit}")
 async def lexical_search(
     collection_id: UUID, query: str, language: str, limit: int, request: Request

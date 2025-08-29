@@ -1,4 +1,5 @@
 <script>
+	import MapOfPlaces from '$components/MapOfPlaces.svelte';
 	import { DataTable, Link, Pagination, Search, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
@@ -66,44 +67,49 @@
 	};
 </script>
 
-{#await getStoryRows()}
-	<ProgressBar helperText="Loading..." />
-{:then rows}
-	<Pagination
-		totalItems={totalCollectionStories}
-		pageSizes={[10, 15, 20]}
-		page={$page.url.searchParams.has('page')
-			? parseInt($page.url.searchParams.get('page'))
-			: currentPage}
-		pageSize={$page.url.searchParams.has('pageSize')
-			? parseInt($page.url.searchParams.get('pageSize'))
-			: pageSize}
-		on:update={updatePagination}
-	/>
-	<DataTable
-		title={`Stories in the collection ${collectionName}`}
-		description="Use the search bar below to run a lexical search on this collection."
-		zebra
-		size="tall"
-		{headers}
-		{rows}
-	>
-		<Search
-			bind:value={searchQuery}
-			expanded={true}
-			on:change={searchTexts}
-			placeholder="Enter text to search this collection"
+<div>
+	<MapOfPlaces {collectionId} />
+</div>
+<div>
+	{#await getStoryRows()}
+		<ProgressBar helperText="Loading..." />
+	{:then rows}
+		<Pagination
+			totalItems={totalCollectionStories}
+			pageSizes={[10, 15, 20]}
+			page={$page.url.searchParams.has('page')
+				? parseInt($page.url.searchParams.get('page'))
+				: currentPage}
+			pageSize={$page.url.searchParams.has('pageSize')
+				? parseInt($page.url.searchParams.get('pageSize'))
+				: pageSize}
+			on:update={updatePagination}
 		/>
-		<svelte:fragment slot="cell" let:row let:cell>
-			{#if cell.key === 'text_embedding'}
-				<Link
-					icon={Launch}
-					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
-					target="_blank">Similar</Link
-				>
-			{:else}
-				{cell.value}
-			{/if}
-		</svelte:fragment>
-	</DataTable>
-{/await}
+		<DataTable
+			title={`Stories in the collection ${collectionName}`}
+			description="Use the search bar below to run a lexical search on this collection."
+			zebra
+			size="tall"
+			{headers}
+			{rows}
+		>
+			<Search
+				bind:value={searchQuery}
+				expanded={true}
+				on:change={searchTexts}
+				placeholder="Enter text to search this collection"
+			/>
+			<svelte:fragment slot="cell" let:row let:cell>
+				{#if cell.key === 'text_embedding'}
+					<Link
+						icon={Launch}
+						href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
+						target="_blank">Similar</Link
+					>
+				{:else}
+					{cell.value}
+				{/if}
+			</svelte:fragment>
+		</DataTable>
+	{/await}
+</div>
