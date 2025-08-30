@@ -51,7 +51,16 @@
 					</Marker>
 				{/each}
 			</MarkerCluster>
-			<Heat {latLngs} />
+			<Heat
+				{latLngs}
+				options={{
+					gradient: {
+						0.1: 'pink',
+						0.65: 'orange',
+						1: 'purple'
+					}
+				}}
+			/>
 		{/await}
 	</Map>
 </div>

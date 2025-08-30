@@ -10,7 +10,7 @@
 		SideNavLink,
 		SkipToContent
 	} from 'carbon-components-svelte';
-	//import DataBase from 'carbon-icons-svelte/lib/DataBase.svelte';
+	import Api from 'carbon-icons-svelte/lib/Api.svelte';
 	import LogoJupyter from 'carbon-icons-svelte/lib/LogoJupyter.svelte';
 	import Home from 'carbon-icons-svelte/lib/Home.svelte';
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
@@ -66,6 +66,7 @@
 			isSelected={$page.url.pathname == `/jupyter/tree/notebooks/`}
 		/>
 		<SideNavDivider />
+		<SideNavLink icon={Api} text="API Docs" href="{base}/api/docs" target="_blank" />
 		<SideNavLink
 			icon={LogoGithub}
 			text="GitHub"
