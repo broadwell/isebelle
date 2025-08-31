@@ -130,6 +130,8 @@
 						href={`${base}/similar/${row.id}?collection=${row.collection}`}
 						target="_blank">Similar</Link
 					>
+				{:else if cell.key === 'text'}
+					<div class="cell-text">{cell.value}</div>
 				{:else}
 					{cell.value}
 				{/if}
@@ -155,5 +157,8 @@
 		text-align: center;
 		font-weight: bold;
 		color: maroon;
+	}
+	.cell-text {
+		white-space: break-spaces;
 	}
 </style>

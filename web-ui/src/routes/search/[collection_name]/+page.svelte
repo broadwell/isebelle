@@ -93,9 +93,17 @@
 					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
 					target="_blank">Similar</Link
 				>
+			{:else if cell.key === 'text'}
+				<div class="cell-text">{cell.value}</div>
 			{:else}
 				{cell.value}
 			{/if}
 		</svelte:fragment>
 	</DataTable>
 {/await}
+
+<style>
+	.cell-text {
+		white-space: break-spaces;
+	}
+</style>

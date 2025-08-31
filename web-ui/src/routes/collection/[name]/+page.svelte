@@ -61,7 +61,7 @@
 					id: story.story_id,
 					collection_name: story.collection_name,
 					display_language: story.display_language,
-					text: story.text
+					text: story.text.trim()
 				}))
 			);
 	};
@@ -106,6 +106,8 @@
 						href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
 						target="_blank">Similar</Link
 					>
+				{:else if cell.key === 'text'}
+					<div class="cell-text">{cell.value}</div>
 				{:else}
 					{cell.value}
 				{/if}
@@ -113,3 +115,9 @@
 		</DataTable>
 	{/await}
 </div>
+
+<style>
+	.cell-text {
+		white-space: break-spaces;
+	}
+</style>
