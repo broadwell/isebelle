@@ -103,7 +103,7 @@ async def initialize_db(conn, drop=False) -> None:
     await conn.execute(
         """
         CREATE TABLE IF NOT EXISTS keyword (
-            keyword VARCHAR(64) UNIQUE NOT NULL,
+            keyword VARCHAR(128) UNIQUE NOT NULL,
             language_iso_639 VARCHAR(5) NOT NULL,
             PRIMARY KEY(keyword)
         )

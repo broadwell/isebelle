@@ -22,7 +22,7 @@
 	];
 
 	const searchTexts = () => {
-		goto(`${base}/search/${collectionId}?query=${searchQuery}&limit=10000`);
+		goto(`${base}/search/${collectionName}?query=${searchQuery}&limit=10000`);
 	};
 
 	const updatePagination = (/** @type {CustomEvent} */ paginationEvent) => {
@@ -32,20 +32,20 @@
 			paginationEvent.detail.pageSize != searchParams.get('pageSize')
 		)
 			goto(
-				`${base}/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
+				`${base}/collection/${collectionName}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
 			);
 	};
 
 	const getStoryRows = async () => {
-		collectionId = $page.data.id;
+		collectionName = $page.data.name;
 
 		let searchParams = $page.url.searchParams;
 
 		currentPage = searchParams.has('page') ? searchParams.get('page') : currentPage;
 		pageSize = searchParams.has('pageSize') ? searchParams.get('pageSize') : pageSize;
 
-		collectionName = await fetch(`${$page.data.apiBase}/collection_name/${collectionId}`).then(
-			(data) => data.json().then((data) => data.name.replaceAll('_', ' '))
+		collectionId = await fetch(`${$page.data.apiBase}/collection_id/${collectionName}`).then(
+			(data) => data.json().then((data) => data.id)
 		);
 
 		totalCollectionStories = await fetch(

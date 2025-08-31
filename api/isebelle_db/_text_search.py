@@ -8,7 +8,7 @@ import requests
 
 
 async def lexical_search(
-    self, collection_id: UUID, query: str, language: str, limit: int
+    self, collection_name: str, query: str, language: str, limit: int
 ) -> list:
     return await self._pool.fetch(
         f"""
@@ -20,11 +20,11 @@ async def lexical_search(
             text,
             ts_rank(search_text, query) AS rank
         FROM story, to_tsquery('{language}', '{query}') AS query
-        WHERE collection_id = $1 AND search_text @@ query
+        WHERE collection_name = $1 AND search_text @@ query
         ORDER BY rank DESC
         LIMIT $2
         """,
-        collection_id,
+        collection_name,
         limit,
     )
 

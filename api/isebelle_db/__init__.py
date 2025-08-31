@@ -43,6 +43,7 @@ class IsebelleDb:
         get_collection_stories,
         get_collection_stories_count,
         get_collection_places,
+        get_story_places,
     )
     from isebelle_db._text_search import (
         lexical_search,

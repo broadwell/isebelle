@@ -40,7 +40,7 @@
 
 	const rowClicked = (/** @type {CustomEvent} */ clickEvent) => {
 		if (clickEvent.detail.row === undefined) return;
-		goto(`${base}/collection/${clickEvent.detail.row.id}`);
+		goto(`${base}/collection/${clickEvent.detail.row.name.replaceAll(' ', '_')}`);
 	};
 </script>
 

@@ -431,21 +431,28 @@ async def load_stories_xml(
                 place_id = f"{collection_name}.{place.get('id')}"
             else:
                 place_id = f"{collection_name}.{slugify(place_name)}"
-            place_lon = float(
-                get_value_by_xpath(place, "isebel:point/datacite:pointLongitude/text()")
+            place_lon = get_value_by_xpath(
+                place, "isebel:point/datacite:pointLongitude/text()"
             )
-            place_lat = float(
-                get_value_by_xpath(place, "isebel:point/datacite:pointLatitude/text()")
+            place_lat = get_value_by_xpath(
+                place, "isebel:point/datacite:pointLatitude/text()"
             )
-            place_roles = place.xpath("isebel:role/text()", namespaces=NS)
-            # print("PLACE", place_id, place_name, place_lon, place_lat, place_roles)
-
-            if place_lon is None or place_lat is None:
+            if (
+                place_lon.strip() == ""
+                or place_lat.strip() == ""
+                or place_lon is None
+                or place_lat is None
+            ):
                 logging.info(f"Place {place_name} has no coordinates, skipping")
                 continue
 
+            place_roles = place.xpath("isebel:role/text()", namespaces=NS)
+            # print("PLACE", place_id, place_name, place_lon, place_lat, place_roles)
+
             if place_id not in new_places:
-                await add_place(self, place_id, place_name, place_lon, place_lat)
+                await add_place(
+                    self, place_id, place_name, float(place_lon), float(place_lat)
+                )
                 new_places.add(place_id)
 
             await add_story_place(self, story_id, place_id, place_roles)
@@ -490,16 +497,17 @@ async def load_stories_xml(
             else:
                 keyword_lang = language_code
             keyword_text = keyword.text
-            if keyword_text not in new_keywords:
-                await add_keyword(self, keyword_text, keyword_lang)
-            story_keywords.append(keyword_text)
+            if keyword_text is not None and keyword_text.strip() != "":
+                if keyword_text not in new_keywords:
+                    await add_keyword(self, keyword_text.strip(), keyword_lang)
+                story_keywords.append(keyword_text.strip())
 
         tale_types = get_value_by_xpath(tree, "/isebel:story/isebel:taleTypes")
         story_tale_types = set()
         for tale_type in tale_types:
-            type_number = None
-            if "number" in tale_type.attrib:
-                type_number = tale_type.get("number")
+            # type_number = None
+            # if "number" in tale_type.attrib:
+            #     type_number = tale_type.get("number")
             if "title" in tale_type.attrib:
                 type_title = tale_type.get("title")
                 story_tale_types.add(type_title)
@@ -535,6 +543,7 @@ async def load_stories_xml(
                     INSERT INTO story (
                         collection_id, collection_name, story_id, title, language_iso_639, text, search_language, display_language, keywords, tale_types, story_url, date_collected, date_published, text_embedding)
                         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                        ON CONFLICT("story_id") DO NOTHING
                     ;
                     """,
                     stories_to_add,
@@ -546,6 +555,7 @@ async def load_stories_xml(
                     INSERT INTO story (
                         collection_id, collection_name, story_id, title, language_iso_639, text, search_language, display_language, keywords, tale_types, story_url, date_collected, date_published)
                         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                        ON CONFLICT("story_id") DO NOTHING
                     ;
                     """,
                     stories_to_add,
