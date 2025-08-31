@@ -97,7 +97,7 @@
 				bind:value={searchQuery}
 				expanded={true}
 				on:change={searchTexts}
-				placeholder="Enter text to search this collection"
+				placeholder="Enter text to search this collection (original language only)"
 			/>
 			<svelte:fragment slot="cell" let:row let:cell>
 				{#if cell.key === 'text_embedding'}

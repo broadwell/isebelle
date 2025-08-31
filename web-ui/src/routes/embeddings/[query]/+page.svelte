@@ -1,4 +1,5 @@
 <script>
+	import MapOfPlaces from '$components/MapOfPlaces.svelte';
 	import { DataTable, Link, MultiSelect, Pagination, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
@@ -83,7 +84,7 @@
 					collection: story.collection_name,
 					id: story.story_id,
 					language: story.search_language.replace(/^./, (str) => str.toUpperCase()),
-					text: story.text,
+					text: story.text.trim(),
 					similarity: `${Math.round((1 - story.distance) * 10000) / 100}%`,
 					embedding: story.text_embedding
 				}))
@@ -99,6 +100,7 @@
 	{#await getStoryRows()}
 		<ProgressBar helperText="Searching for similar stories..." />
 	{:then rows}
+		<MapOfPlaces storiesList={rows} />
 		<div class="control-board">
 			<Pagination
 				totalItems={totalMatchingStories}

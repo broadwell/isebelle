@@ -53,7 +53,7 @@
 			.then((data) =>
 				data.map((/** @type {StoryRecord} */ story) => ({
 					id: story.story_id,
-					text: story.text,
+					text: story.text.trim(),
 					text_embedding: story.text_embedding,
 					language: story.display_language,
 					rank: Math.round(story.rank * 1000) / 1000
