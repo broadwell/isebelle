@@ -26,6 +26,10 @@ LANG_CODE_MAPPINGS = {
     "fy": ["fry", "frr", "frs"],
 }
 
+# This is only needed if the story IDs in the embeddings files don't exactly
+# match the story IDs in the DB
+collection_prefix = {"Evald_Tang_Kristensen": "da.etk."}
+
 
 def get_value_by_xpath(xml_tree, xpath):
     try:
@@ -122,12 +126,14 @@ async def add_place(
 async def add_story_place(
     self,
     story_id: str,
+    collection_id: UUID,
     place_id: str,
     roles: list,
 ) -> None:
     await self._pool.execute(
-        f"INSERT INTO story_place (story_id, place_id, roles) VALUES ($1, $2, $3);",
+        f"INSERT INTO story_place (story_id, collection_id, place_id, roles) VALUES ($1, $2, $3, $4);",
         story_id,
+        collection_id,
         place_id,
         roles,
     )
@@ -136,12 +142,14 @@ async def add_story_place(
 async def add_story_person(
     self,
     story_id: str,
+    collection_id: UUID,
     person_id: str,
     roles: list,
 ) -> None:
     await self._pool.execute(
-        f"INSERT INTO story_person (story_id, person_id, roles) VALUES ($1, $2, $3);",
+        f"INSERT INTO story_person (story_id, collection_id, person_id, roles) VALUES ($1, $2, $3, $4);",
         story_id,
+        collection_id,
         person_id,
         roles,
     )
@@ -455,7 +463,7 @@ async def load_stories_xml(
                 )
                 new_places.add(place_id)
 
-            await add_story_place(self, story_id, place_id, place_roles)
+            await add_story_place(self, story_id, collection_id, place_id, place_roles)
 
         people = get_value_by_xpath(tree, "/isebel:story/isebel:persons")
         for person in people:
@@ -475,7 +483,9 @@ async def load_stories_xml(
                 )
                 new_persons.add(person_id)
 
-            await add_story_person(self, story_id, person_id, person_roles)
+            await add_story_person(
+                self, story_id, collection_id, person_id, person_roles
+            )
 
         events = get_value_by_xpath(tree, "/isebel:story/isebel:events")
         story_publication_date = None
@@ -602,12 +612,18 @@ async def load_embeddings(
 
     embeddings_to_add = []
 
+    story_id_prefix = ""
+    if collection_name in collection_prefix:
+        story_id_prefix = collection_prefix[collection_name]
+
     with jsonlines.open(embeddings_path) as reader:
         for obj in reader:
             for story_id in obj:
                 embedding = obj[story_id]
 
-                embeddings_to_add.append([story_id, embedding])
+                full_story_id = story_id_prefix + story_id
+
+                embeddings_to_add.append([full_story_id, embedding])
 
                 if len(embeddings_to_add) == STORY_BATCH_SIZE:
                     await self._pool.executemany(

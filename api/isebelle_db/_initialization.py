@@ -15,7 +15,7 @@ async def initialize_db(conn, drop=False) -> None:
     await conn.execute(
         """
         CREATE TABLE IF NOT EXISTS collection (
-            id uuid DEFAULT uuid_generate_v1mc() PRIMARY KEY,
+            id UUID DEFAULT uuid_generate_v1mc() PRIMARY KEY,
             name VARCHAR(150) UNIQUE NOT NULL,
             org_name VARCHAR(150) NOT NULL,
             country VARCHAR(150) NOT NULL,
@@ -31,7 +31,7 @@ async def initialize_db(conn, drop=False) -> None:
     await conn.execute(
         """
         CREATE TABLE IF NOT EXISTS story (
-            collection_id uuid NOT NULL REFERENCES collection(id),
+            collection_id UUID NOT NULL REFERENCES collection(id),
             collection_name VARCHAR(150) NOT NULL REFERENCES collection(name),
             story_id VARCHAR(150) UNIQUE NOT NULL,
             title VARCHAR(150) DEFAULT NULL,
@@ -69,6 +69,7 @@ async def initialize_db(conn, drop=False) -> None:
         """
         CREATE TABLE IF NOT EXISTS story_person (
             story_id VARCHAR(150) NOT NULL,
+            collection_id UUID NOT NULL,
             person_id VARCHAR(64) NOT NULL,
             roles text[] DEFAULT NULL
         )
@@ -93,6 +94,7 @@ async def initialize_db(conn, drop=False) -> None:
         """
         CREATE TABLE IF NOT EXISTS story_place (
             story_id VARCHAR(150) NOT NULL,
+            collection_id UUID NOT NULL,
             place_id VARCHAR(64) NOT NULL,
             roles text[] DEFAULT NULL
         )

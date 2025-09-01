@@ -5,6 +5,26 @@ async def get_available_collections(self) -> list:
     return await self._pool.fetch("""SELECT * FROM collection;""")
 
 
+async def get_collections(self) -> list:
+    return await self._pool.fetch(
+        """
+        SELECT
+            id,
+            name,
+            org_name,
+            country,
+            display_language,
+            story_count,
+            COUNT(DISTINCT story_place.place_id) AS place_count,
+            count(DISTINCT story_person.person_id) AS person_count
+        FROM collection, story_place, story_person
+        WHERE
+            collection.id = story_place.collection_id AND
+            collection_id = story_person.collection_id
+        GROUP BY collection.id;"""
+    )
+
+
 async def get_collection(self, collection_id: UUID) -> str:
     return await self._pool.fetchrow(
         "SELECT * FROM collection WHERE id = $1;", collection_id
