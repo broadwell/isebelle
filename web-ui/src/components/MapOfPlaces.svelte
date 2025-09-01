@@ -3,6 +3,7 @@
 	import { Map, TileLayer, Marker, Popup } from 'sveaflet';
 	import { Heat } from 'sveaflet-heat';
 	import { MarkerCluster } from 'sveaflet-markercluster';
+	import { mode } from '../lib/utils.js';
 
 	/**
 	 * @typedef {Object} MapOfPlacesProps
@@ -16,32 +17,52 @@
 	let placeData = [];
 	let latLngs = [];
 
-	const getPlaceData = async () => {
-		let response = [];
+	let /** @type Map */ map;
 
+	let avgLat = 56;
+	let avgLon = 5;
+
+	const getPlaceData = async () => {
 		if (collectionId !== undefined && collectionId !== '') {
-			response = await (await fetch(`${PUBLIC_API_BASE}/collection_places/${collectionId}`)).json();
+			placeData = await (
+				await fetch(`${PUBLIC_API_BASE}/collection_places/${collectionId}`)
+			).json();
 		} else if (storiesList !== undefined && storiesList.length > 0) {
-			const storyIds = storiesList.map((item) => `'${item.id}'`).join(', ');
-			response = await (await fetch(`${PUBLIC_API_BASE}/story_places/${storyIds}`)).json();
+			//const storyIds = storiesList.map((item) => `'${item.id}'`).join(', ');
+			const storyIds = storiesList.map((item) => item.id);
+			// Need to split the list into multiple requests to avoid HTTP 414 (URI too long) errors
+			let theseStoryIds = [];
+			let queryStoryIds = '';
+			let response = null;
+			for (let i = 0; i < storyIds.length; i++) {
+				theseStoryIds.push(storyIds[i]);
+				queryStoryIds = theseStoryIds.map((item) => `'${item}'`).join(', ');
+				if (queryStoryIds.length > 1800 || i === storyIds.length - 1) {
+					response = await (await fetch(`${PUBLIC_API_BASE}/story_places/${queryStoryIds}`)).json();
+					placeData = placeData.concat(response);
+					theseStoryIds = [];
+				}
+			}
 		}
-		placeData = response;
+		let /** @type [Number] | [] */ allLats = [];
+		let /** @type [Number] | [] */ allLons = [];
 		placeData.forEach((place) => {
 			for (let i = 0; i < place['place_stories'].length; i++) {
 				latLngs.push([place['lat'], place['lon']]);
+				allLats.push(place['lat']);
+				allLons.push(place['lon']);
 			}
 		});
+		avgLat = mode(allLats) || avgLat;
+		avgLon = mode(allLons) || avgLon;
+		if (map !== undefined) map.setView([avgLat, avgLon], 5, { duration: 1, animate: true });
+
 		return placeData;
 	};
 </script>
 
 <div style="width:100%; height:500px;">
-	<Map
-		options={{
-			center: [56, 5],
-			zoom: 5
-		}}
-	>
+	<Map bind:instance={map} options={{ center: [56, 5], zoom: 5 }}>
 		<TileLayer url={'https://tile.openstreetmap.org/{z}/{x}/{y}.png'} />
 		{#await getPlaceData() then placeData}
 			<MarkerCluster>
