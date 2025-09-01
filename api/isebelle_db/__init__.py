@@ -32,6 +32,7 @@ class IsebelleDb:
         clear_stories,
         load_embeddings,
         load_stories,
+        load_stories_xml,
     )
     from isebelle_db._initialization import initialize_db
     from isebelle_db._read_only import (
@@ -41,6 +42,8 @@ class IsebelleDb:
         get_collection_name,
         get_collection_stories,
         get_collection_stories_count,
+        get_collection_places,
+        get_story_places,
     )
     from isebelle_db._text_search import (
         lexical_search,

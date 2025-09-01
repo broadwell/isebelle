@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""CLI to load texts from a collection into the db."""
+"""CLI to load texts and metadata from a collection's XML records into the db."""
 
 import argparse
 import asyncio
@@ -89,20 +89,20 @@ async def main() -> None:
         args.display_language,
     )
 
-    logging.info("Loading story texts into the DB")
+    logging.info("Loading story data into the DB")
 
     # Load story data into database
-    await db.load_stories(
+    await db.load_stories_xml(
         collection_id,
         collection_name,
-        Path(collection_path, "texts"),
+        Path(collection_path, "records"),
         collection_language,
         LANGUAGES[collection_language],
         args.display_language,
-        calculate_embeddings=args.calculate_embeddings,
+        # calculate_embeddings=args.calculate_embeddings,
     )
 
-    logging.info("Completed loading story texts into the DB")
+    logging.info("Completed loading story data into the DB")
 
 
 if __name__ == "__main__":

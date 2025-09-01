@@ -1,4 +1,5 @@
 <script>
+	import MapOfPlaces from '$components/MapOfPlaces.svelte';
 	import { DataTable, Link, Pagination, Search, ProgressBar } from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 	import { base } from '$app/paths';
@@ -21,7 +22,7 @@
 	];
 
 	const searchTexts = () => {
-		goto(`${base}/search/${collectionId}?query=${searchQuery}&limit=10000`);
+		goto(`${base}/search/${collectionName}?query=${searchQuery}&limit=10000`);
 	};
 
 	const updatePagination = (/** @type {CustomEvent} */ paginationEvent) => {
@@ -31,20 +32,20 @@
 			paginationEvent.detail.pageSize != searchParams.get('pageSize')
 		)
 			goto(
-				`${base}/collection/${collectionId}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
+				`${base}/collection/${collectionName}?page=${paginationEvent.detail.page}&pageSize=${paginationEvent.detail.pageSize}`
 			);
 	};
 
 	const getStoryRows = async () => {
-		collectionId = $page.data.id;
+		collectionName = $page.data.name;
 
 		let searchParams = $page.url.searchParams;
 
 		currentPage = searchParams.has('page') ? searchParams.get('page') : currentPage;
 		pageSize = searchParams.has('pageSize') ? searchParams.get('pageSize') : pageSize;
 
-		collectionName = await fetch(`${$page.data.apiBase}/collection_name/${collectionId}`).then(
-			(data) => data.json().then((data) => data.name.replaceAll('_', ' '))
+		collectionId = await fetch(`${$page.data.apiBase}/collection_id/${collectionName}`).then(
+			(data) => data.json().then((data) => data.id)
 		);
 
 		totalCollectionStories = await fetch(
@@ -60,50 +61,63 @@
 					id: story.story_id,
 					collection_name: story.collection_name,
 					display_language: story.display_language,
-					text: story.text
+					text: story.text.trim()
 				}))
 			);
 	};
 </script>
 
-{#await getStoryRows()}
-	<ProgressBar helperText="Loading..." />
-{:then rows}
-	<Pagination
-		totalItems={totalCollectionStories}
-		pageSizes={[10, 15, 20]}
-		page={$page.url.searchParams.has('page')
-			? parseInt($page.url.searchParams.get('page'))
-			: currentPage}
-		pageSize={$page.url.searchParams.has('pageSize')
-			? parseInt($page.url.searchParams.get('pageSize'))
-			: pageSize}
-		on:update={updatePagination}
-	/>
-	<DataTable
-		title={`Stories in the collection ${collectionName}`}
-		description="Use the search bar below to run a lexical search on this collection."
-		zebra
-		size="tall"
-		{headers}
-		{rows}
-	>
-		<Search
-			bind:value={searchQuery}
-			expanded={true}
-			on:change={searchTexts}
-			placeholder="Enter text to search this collection"
+<div>
+	<MapOfPlaces {collectionId} />
+</div>
+<div>
+	{#await getStoryRows()}
+		<ProgressBar helperText="Loading..." />
+	{:then rows}
+		<Pagination
+			totalItems={totalCollectionStories}
+			pageSizes={[10, 15, 20]}
+			page={$page.url.searchParams.has('page')
+				? parseInt($page.url.searchParams.get('page'))
+				: currentPage}
+			pageSize={$page.url.searchParams.has('pageSize')
+				? parseInt($page.url.searchParams.get('pageSize'))
+				: pageSize}
+			on:update={updatePagination}
 		/>
-		<svelte:fragment slot="cell" let:row let:cell>
-			{#if cell.key === 'text_embedding'}
-				<Link
-					icon={Launch}
-					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
-					target="_blank">Similar</Link
-				>
-			{:else}
-				{cell.value}
-			{/if}
-		</svelte:fragment>
-	</DataTable>
-{/await}
+		<DataTable
+			title={`Stories in the collection ${collectionName}`}
+			description="Use the search bar below to run a lexical search on this collection."
+			zebra
+			size="tall"
+			{headers}
+			{rows}
+		>
+			<Search
+				bind:value={searchQuery}
+				expanded={true}
+				on:change={searchTexts}
+				placeholder="Enter text to search this collection (original language only)"
+			/>
+			<svelte:fragment slot="cell" let:row let:cell>
+				{#if cell.key === 'text_embedding'}
+					<Link
+						icon={Launch}
+						href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
+						target="_blank">Similar</Link
+					>
+				{:else if cell.key === 'text'}
+					<div class="cell-text">{cell.value}</div>
+				{:else}
+					{cell.value}
+				{/if}
+			</svelte:fragment>
+		</DataTable>
+	{/await}
+</div>
+
+<style>
+	.cell-text {
+		white-space: break-spaces;
+	}
+</style>

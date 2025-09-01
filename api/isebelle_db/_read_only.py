@@ -5,16 +5,24 @@ async def get_available_collections(self) -> list:
     return await self._pool.fetch("""SELECT * FROM collection;""")
 
 
-# async def get_collection_by_id(self, collection_id: UUID) -> asyncpg.Record:
-#     return await self._pool.fetchrow(
-#         "SELECT * FROM collection WHERE id = $1;", collection_id
-#     )
-
-
-# async def get_collection_by_name(self, collection_name: str) -> asyncpg.Record:
-#     return await self._pool.fetchrow(
-#         "SELECT * FROM collection WHERE name = $1;", collection_name
-#     )
+async def get_collections(self) -> list:
+    return await self._pool.fetch(
+        """
+        SELECT
+            id,
+            name,
+            org_name,
+            country,
+            display_language,
+            story_count,
+            COUNT(DISTINCT story_place.place_id) AS place_count,
+            count(DISTINCT story_person.person_id) AS person_count
+        FROM collection, story_place, story_person
+        WHERE
+            collection.id = story_place.collection_id AND
+            collection_id = story_person.collection_id
+        GROUP BY collection.id;"""
+    )
 
 
 async def get_collection(self, collection_id: UUID) -> str:
@@ -51,4 +59,42 @@ async def get_collection_stories(
         collection_id,
         start,
         count,
+    )
+
+
+async def get_collection_places(self, collection_id: UUID) -> list:
+    return await self._pool.fetch(
+        """
+        WITH collection_stories AS (
+            SELECT collection_id, story_id FROM story WHERE collection_id = $1
+        ), collection_places AS (
+            SELECT story_place.place_id, array_agg(collection_stories.story_id) as place_stories FROM story_place
+                INNER JOIN collection_stories ON story_place.story_id = collection_stories.story_id
+                GROUP BY place_id
+        )
+        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_places.place_stories
+            FROM place INNER JOIN collection_places
+            ON collection_places.place_id = place.place_id 
+        ;
+        """,
+        collection_id,
+    )
+
+
+async def get_story_places(self, story_ids: str) -> list:
+
+    return await self._pool.fetch(
+        f"""
+        WITH place_stories AS (
+            select collection_id, story_id FROM story WHERE story_id IN ({story_ids})
+        ), story_places AS (
+            SELECT story_place.place_id, array_agg(story_place.story_id) as place_stories FROM story_place
+                INNER JOIN place_stories ON story_place.story_id = place_stories.story_id
+                GROUP BY place_id
+        )
+        SELECT place.place_id, place.place_name, place.lon, place.lat, story_places.place_stories
+            FROM place INNER JOIN story_places
+            ON place.place_id = story_places.place_id
+        ;
+        """
     )

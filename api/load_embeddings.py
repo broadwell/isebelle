@@ -39,6 +39,9 @@ async def main() -> None:
 
     collection_name = embeddings_filename.split(".")[0]
 
+    # collection_id = await db.get_collection_id(collection_name)
+    # collection_info = await db.get_collection(collection_id)
+
     logging.info("Loading collection embeddings into the DB")
 
     # Load story data into database

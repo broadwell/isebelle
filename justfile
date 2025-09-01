@@ -81,6 +81,11 @@ default:
 @add-embeddings path:
   docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_embeddings.py --embeddings-path \"\$STORIES_SRC_FOLDER/$1\""
 
+# Load all stories and places from a collection's XML records
+@add-collection-xml path organization country search-language display-language:
+  docker compose exec -T api sh -c "LOG_LEVEL=$LOG_LEVEL /app/load_collection_xml.py --collection-path \"\$STORIES_SRC_FOLDER/$1\" --organization \"$2\" --country \"$3\" --search-language \"$4\" --display-language \"$5\""
+
+
 @delete-collection collection_name:
   docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM story WHERE collection_name='$1\';\""
   docker compose exec -T db sh -c "psql -U isebelle -c \"DELETE FROM collection WHERE name='$1';\""

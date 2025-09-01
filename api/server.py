@@ -70,6 +70,12 @@ async def collection(collection_id: UUID, request: Request):
     return collection_name
 
 
+@isebelle_api.get("/collection_id/{collection_name}")
+async def collection_id(collection_name: str, request: Request):
+    collection_id = await request.app.state.db.get_collection_id(collection_name)
+    return collection_id
+
+
 @isebelle_api.get("/collection_name/{collection_id}")
 async def collection_name(collection_id: UUID, request: Request):
     collection_name = await request.app.state.db.get_collection_name(collection_id)
@@ -97,12 +103,30 @@ async def collection_stories(
     )
 
 
-@isebelle_api.get("/lexical_search/{collection_id}/{query}/{language}/{limit}")
+@isebelle_api.get("/collection_places/{collection_id}")
+async def collection_places(collection_id: UUID, request: Request):
+    collection_places = await request.app.state.db.get_collection_places(collection_id)
+    return Response(
+        content=json.dumps(collection_places, cls=IsebelleJSONEncoder),
+        media_type="application/json",
+    )
+
+
+@isebelle_api.get("/story_places/{story_ids}")
+async def story_places(story_ids: str, request: Request):
+    story_places = await request.app.state.db.get_story_places(story_ids)
+    return Response(
+        content=json.dumps(story_places, cls=IsebelleJSONEncoder),
+        media_type="application/json",
+    )
+
+
+@isebelle_api.get("/lexical_search/{collection_name}/{query}/{language}/{limit}")
 async def lexical_search(
-    collection_id: UUID, query: str, language: str, limit: int, request: Request
+    collection_name: str, query: str, language: str, limit: int, request: Request
 ):
     matching_stories = await request.app.state.db.lexical_search(
-        collection_id, query, language, limit
+        collection_name, query, language, limit
     )
     return Response(
         content=json.dumps(matching_stories, cls=IsebelleJSONEncoder),
