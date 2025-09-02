@@ -17,7 +17,7 @@
 	let placeData = [];
 	let latLngs = [];
 
-	let /** @type Map */ map;
+	let /** @type Map */ map = $state();
 
 	let avgLat = 56;
 	let avgLon = 5;
