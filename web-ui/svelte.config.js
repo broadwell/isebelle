@@ -18,6 +18,16 @@ const config = {
 		alias: {
 			'@': './src',
 			$components: './src/components'
+		},
+		prerender: {
+			handleHttpError: ({ path, referrer, message }) => {
+				if (path === '/jupyter/tree/notebooks/') {
+					return;
+				}
+				console.log("Throwing error, path is", path);
+				// otherwise fail the build
+				throw new Error(message);
+			}
 		}
 	}
 };

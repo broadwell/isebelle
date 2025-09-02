@@ -15,7 +15,7 @@
 	import Home from 'carbon-icons-svelte/lib/Home.svelte';
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';
-	import Table from 'carbon-icons-svelte/lib/Table.svelte';
+	//import Table from 'carbon-icons-svelte/lib/Table.svelte';
 	//import ChartScatter from 'carbon-icons-svelte/lib/ChartScatter.svelte';
 
 	import '@/carbon-theming.css';
@@ -35,17 +35,17 @@
 
 <SideNav bind:isOpen={isSideNavOpen} rail>
 	<SideNavItems>
-		<SideNavLink
+		<!-- <SideNavLink
 			icon={Search}
 			text="Search Embeddings"
-			href="{base}/search/"
-			isSelected={$page.url.pathname == `${base}/search`}
-		/>
+			href="search/"
+			isSelected={$page.url.pathname == `search`}
+		/> -->
 		<SideNavLink
-			icon={Table}
-			text="Browse Collections"
-			href="{base}/browse/"
-			isSelected={$page.url.pathname == `${base}/browse/`}
+			icon={Search}
+			text="Explore"
+			href="{base}/browse"
+			isSelected={$page.url.pathname == `browse/`}
 		/>
 		<!-- <SideNavLink
 			icon={ChartScatter}
@@ -58,7 +58,6 @@
 			text="Notebooks"
 			href="/jupyter/tree/notebooks/"
 			target="_blank"
-			isSelected={$page.url.pathname == `/jupyter/tree/notebooks/`}
 		/>
 		<SideNavDivider />
 		<SideNavLink
@@ -67,7 +66,12 @@
 			href="{base}/"
 			isSelected={$page.url.pathname == `${base}/`}
 		/>
-		<SideNavLink icon={Api} text="API Docs" href="{base}/api/docs" target="_blank" />
+		<SideNavLink
+			icon={Api}
+			text="API Docs"
+			href="https://scando.ist.berkeley.edu/isebelle/api/docs"
+			target="_blank"
+		/>
 		<SideNavLink
 			icon={LogoGithub}
 			text="GitHub"

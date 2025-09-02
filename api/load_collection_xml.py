@@ -95,7 +95,7 @@ async def main() -> None:
     await db.load_stories_xml(
         collection_id,
         collection_name,
-        Path(collection_path, "records"),
+        Path(collection_path, "records", "isebel"),
         collection_language,
         LANGUAGES[collection_language],
         args.display_language,

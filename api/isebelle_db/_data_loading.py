@@ -28,7 +28,7 @@ LANG_CODE_MAPPINGS = {
 
 # This is only needed if the story IDs in the embeddings files don't exactly
 # match the story IDs in the DB
-collection_prefix = {"Evald_Tang_Kristensen": "da.etk."}
+collection_prefix = {"Evald_Tang_Kristensen": "da.etk.", "SAMLA": "no.samla."}
 
 
 def get_value_by_xpath(xml_tree, xpath):

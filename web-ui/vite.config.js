@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	build: {
+		base: "/isebelle"
+	},
 	server: {
 		fs: {
 			strict: false
