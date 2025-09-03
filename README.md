@@ -31,9 +31,9 @@ EOL
 but in this case you will need to install the script's dependencies in your local environment.
 1. If the story embeddings have been generated as above, you should load the collection's story texts first by running  
 `just add-collection-xml [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [SEARCH_LANGUAGE] [DISPLAY_LANGUAGE]`,  
-then `just add-embeddings [COLLECTION_NAME]`  
+then `just add-embeddings [COLLECTION_NAME]/[EMBEDDINGS_FILENAME]`  
 For example,  
-`~/isebelle$ just add-collection Evald_Tang_Kristensen "UC Berkeley" Denmark Danish Dansk`  
+`~/isebelle$ just add-collection-xml Evald_Tang_Kristensen "UC Berkeley" Denmark Danish Dansk`  
 then  
 `~/isebelle$ just add-embeddings Evald_Tang_Kristensen/Evald_Tang_Kristensen.embeddings.gte-Qwen2-7B-instruct.jsonl`
 If you prefer to generate the story embeddings within the Docker containers while simultaneously importing them along with the story texts, run  
