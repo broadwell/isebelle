@@ -35,7 +35,7 @@ then `just add-embeddings [COLLECTION_NAME]/[EMBEDDINGS_FILENAME]`
 For example,  
 `~/isebelle$ just add-collection-xml Evald_Tang_Kristensen "UC Berkeley" Denmark Danish Dansk`  
 then  
-`~/isebelle$ just add-embeddings Evald_Tang_Kristensen/Evald_Tang_Kristensen.embeddings.gte-Qwen2-7B-instruct.jsonl`
+`~/isebelle$ just add-embeddings Evald_Tang_Kristensen/Evald_Tang_Kristensen.embeddings.gte-Qwen2-7B-instruct.jsonl`  
 If you prefer to generate the story embeddings within the Docker containers while simultaneously importing them along with the story texts, run  
 `just add-collection-and-calculate-embeddings [COLLECTION_NAME] [ORGANIZATION] [COUNTRY] [SEARCH_LANGUAGE] [DISPLAY_LANGUAGE]` instead.
 1. The search and browse interface for the collections and embeddings should be available at [http://localhost:808/isebelle](http://localhost:8080/isebelle)
