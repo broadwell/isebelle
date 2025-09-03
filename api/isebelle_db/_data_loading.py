@@ -613,6 +613,7 @@ async def load_embeddings(
     self,
     collection_name: str,
     embeddings_path: Path,
+    coll_story_ids: list,
     reindex=True,
 ) -> None:
     logging.info(f"Importing embeddings from '{embeddings_path}'...")
@@ -623,12 +624,23 @@ async def load_embeddings(
     if collection_name in collection_prefix:
         story_id_prefix = collection_prefix[collection_name]
 
+    print(coll_story_ids)
+
     with jsonlines.open(embeddings_path) as reader:
         for obj in reader:
             for story_id in obj:
-                embedding = obj[story_id]
 
                 full_story_id = story_id_prefix + story_id
+
+                if full_story_id not in coll_story_ids:
+                    logging.info(
+                        f"Couldn't find story ID {full_story_id} from embeddings file in DB, skipping"
+                    )
+                    continue
+
+                logging.info(f"MATCHED STORY FROM DB {full_story_id} TO EMBEDDINGS FILE")
+
+                embedding = obj[story_id]
 
                 embeddings_to_add.append([full_story_id, embedding])
 
@@ -641,6 +653,7 @@ async def load_embeddings(
                         """,
                         embeddings_to_add,
                     )
+
                     embeddings_to_add = []
 
     if len(embeddings_to_add) > 0:

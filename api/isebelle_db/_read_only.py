@@ -42,7 +42,7 @@ async def get_collection(self, collection_id: UUID) -> str:
     )
 
 
-async def get_collection_id(self, collection_name: str) -> UUID:
+async def get_collection_id(self, collection_name: str) -> str:
     return await self._pool.fetchrow(
         "SELECT id FROM collection WHERE name = $1;", collection_name
     )
@@ -70,6 +70,15 @@ async def get_collection_stories(
         collection_id,
         start,
         count,
+    )
+
+
+async def get_collection_story_ids(self, collection_name: str) -> list:
+    return await self._pool.fetch(
+        """SELECT story_id FROM story
+            WHERE collection_name = $1 ORDER BY story_id
+        """,
+        collection_name,
     )
 
 

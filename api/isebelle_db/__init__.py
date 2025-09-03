@@ -43,6 +43,7 @@ class IsebelleDb:
         get_collection_name,
         get_collection_stories,
         get_collection_stories_count,
+        get_collection_story_ids,
         get_collection_places,
         get_story_places,
     )

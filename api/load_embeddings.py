@@ -39,8 +39,12 @@ async def main() -> None:
 
     collection_name = embeddings_filename.split(".")[0]
 
-    # collection_id = await db.get_collection_id(collection_name)
-    # collection_info = await db.get_collection(collection_id)
+    coll_story_records = await db.get_collection_story_ids(collection_name)
+    coll_story_ids = [rec["story_id"] for rec in coll_story_records]
+
+    logging.info(
+        f"Collection has {len(coll_story_ids)} stories to match with embeddings"
+    )
 
     logging.info("Loading collection embeddings into the DB")
 
@@ -48,6 +52,7 @@ async def main() -> None:
     await db.load_embeddings(
         collection_name,
         embeddings_path,
+        coll_story_ids,
     )
 
     logging.info("Completed loading collection embeddings into the DB")
