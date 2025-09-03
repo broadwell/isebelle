@@ -9,19 +9,30 @@ async def get_collections(self) -> list:
     return await self._pool.fetch(
         """
         SELECT
-            id,
+            collection.id,
             name,
             org_name,
             country,
             display_language,
             story_count,
-            COUNT(DISTINCT story_place.place_id) AS place_count,
-            count(DISTINCT story_person.person_id) AS person_count
-        FROM collection, story_place, story_person
-        WHERE
-            collection.id = story_place.collection_id AND
-            collection_id = story_person.collection_id
-        GROUP BY collection.id;"""
+            place_count,
+            person_count
+        FROM collection
+        LEFT JOIN (
+            SELECT collection.id, COUNT(*) AS place_count
+            FROM collection
+            INNER JOIN story_place ON collection.id = story_place.collection_id
+            GROUP BY collection.id
+        ) AS pl ON collection.id = pl.id
+        LEFT JOIN (
+            SELECT collection.id, COUNT(*) as person_count
+            FROM collection
+            INNER JOIN story_person ON collection.id = story_person.collection_id
+            GROUP BY collection.id
+        ) AS pe ON collection.id = pe.id 
+        ORDER BY name
+        ;
+        """
     )
 
 
@@ -65,14 +76,16 @@ async def get_collection_stories(
 async def get_collection_places(self, collection_id: UUID) -> list:
     return await self._pool.fetch(
         """
-        WITH collection_story_places AS (
-            SELECT place_id, array_agg(story_id) as place_stories FROM story_place
-                WHERE collection_id = $1
+        WITH collection_stories AS (
+            SELECT collection_id, story_id FROM story WHERE collection_id = $1
+        ), collection_places AS (
+            SELECT story_place.place_id, array_agg(DISTINCT collection_stories.story_id) as place_stories FROM story_place
+                INNER JOIN collection_stories ON story_place.story_id = collection_stories.story_id
                 GROUP BY place_id
         )
-        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_story_places.place_stories
-            FROM place INNER JOIN collection_story_places
-            ON collection_story_places.place_id = place.place_id 
+        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_places.place_stories
+            FROM place INNER JOIN collection_places
+            ON collection_places.place_id = place.place_id 
         ;
         """,
         collection_id,
@@ -84,9 +97,9 @@ async def get_story_places(self, story_ids: str) -> list:
     return await self._pool.fetch(
         f"""
         WITH place_stories AS (
-            select collection_id, story_id FROM story WHERE story_id IN ({story_ids})
+            SELECT collection_id, story_id FROM story WHERE story_id IN ({story_ids})
         ), story_places AS (
-            SELECT story_place.place_id, array_agg(story_place.story_id) as place_stories FROM story_place
+            SELECT story_place.place_id, array_agg(DISTINCT story_place.story_id) as place_stories FROM story_place
                 INNER JOIN place_stories ON story_place.story_id = place_stories.story_id
                 GROUP BY place_id
         )

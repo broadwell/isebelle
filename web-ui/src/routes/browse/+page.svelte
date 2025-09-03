@@ -12,7 +12,9 @@
 		{ key: 'org_name', value: 'Organization' },
 		{ key: 'country', value: 'Country' },
 		{ key: 'language', value: 'Language' },
-		{ key: 'story_count', value: 'Stories' }
+		{ key: 'story_count', value: 'Stories' },
+		{ key: 'place_count', value: 'Places' },
+		{ key: 'person_count', value: 'People' }
 	];
 
 	const searchEmbeddings = () => {
@@ -29,7 +31,9 @@
 					org_name: collection.org_name,
 					country: collection.country,
 					language: collection.display_language,
-					story_count: collection.story_count.toLocaleString()
+					story_count: collection.story_count.toLocaleString(),
+					place_count: collection.place_count.toLocaleString(),
+					person_count: collection.person_count.toLocaleString()
 				}))
 			)
 			.then((data) => {

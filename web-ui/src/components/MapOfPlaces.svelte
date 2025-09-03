@@ -3,7 +3,7 @@
 	import { Map, TileLayer, Marker, Popup } from 'sveaflet';
 	import { Heat } from 'sveaflet-heat';
 	import { MarkerCluster } from 'sveaflet-markercluster';
-	import { mode } from '../lib/utils.js';
+	import { mean } from '../lib/utils.js';
 
 	/**
 	 * @typedef {Object} MapOfPlacesProps
@@ -53,8 +53,8 @@
 				allLons.push(place['lon']);
 			}
 		});
-		avgLat = mode(allLats) || avgLat;
-		avgLon = mode(allLons) || avgLon;
+		avgLat = mean(allLats) || avgLat;
+		avgLon = mean(allLons) || avgLon;
 		if (map !== undefined) map.setView([avgLat, avgLon], 5, { duration: 1, animate: true });
 
 		return placeData;

@@ -9,6 +9,7 @@ import jsonlines
 from lxml import etree
 from slugify import slugify
 
+SLUGIFIED_ID_MAX_LENGTH = 64
 
 NS = {
     "datacite": "http://datacite.org/schema/kernel-4",
@@ -28,7 +29,10 @@ LANG_CODE_MAPPINGS = {
 
 # This is only needed if the story IDs in the embeddings files don't exactly
 # match the story IDs in the DB
-collection_prefix = {"Evald_Tang_Kristensen": "da.etk.", "SAMLA": "no.samla."}
+collection_prefix = {
+    "Evald_Tang_Kristensen": "da.etk.",
+    "SAMLA": "no.samla.",
+}
 
 
 def get_value_by_xpath(xml_tree, xpath):
@@ -438,7 +442,9 @@ async def load_stories_xml(
             if "id" in place.attrib:
                 place_id = f"{collection_name}.{place.get('id')}"
             else:
-                place_id = f"{collection_name}.{slugify(place_name)}"
+                place_id = f"{collection_name}.{slugify(place_name)}"[
+                    :SLUGIFIED_ID_MAX_LENGTH
+                ]
             place_lon = get_value_by_xpath(
                 place, "isebel:point/datacite:pointLongitude/text()"
             )
@@ -471,11 +477,12 @@ async def load_stories_xml(
             if "id" in person.attrib:
                 person_id = f"{collection_name}.{person.get('id')}"
             else:
-                person_id = f"{collection_name}.{slugify(person_name)}"
+                person_id = f"{collection_name}.{slugify(person_name)}"[
+                    :SLUGIFIED_ID_MAX_LENGTH
+                ]
             person_roles = person.xpath("isebel:role/text()", namespaces=NS)
             person_gender = get_value_by_xpath(person, "isebel:gender/text()")
             person_profession = get_value_by_xpath(person, "isebel:profession/text()")
-            # print("PERSON", person_id, person_name, person_roles, person_gender)
 
             if person_id not in new_persons:
                 await add_person(

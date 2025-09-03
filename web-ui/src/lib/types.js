@@ -7,6 +7,8 @@
  * @property {string} search_language
  * @property {string} display_language
  * @property {number} story_count
+ * @property {number} place_count
+ * @property {number} person_count
  * @property {string} created_on
  */
 

@@ -38,6 +38,7 @@ class IsebelleDb:
     from isebelle_db._read_only import (
         get_available_collections,
         get_collection,
+        get_collections,
         get_collection_id,
         get_collection_name,
         get_collection_stories,

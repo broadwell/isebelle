@@ -60,7 +60,7 @@ async def root():
 
 @isebelle_api.get("/collections/")
 async def collections(request: Request):
-    available_collections = await request.app.state.db.get_available_collections()
+    available_collections = await request.app.state.db.get_collections()
     return {"collections": available_collections}
 
 
