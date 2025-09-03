@@ -105,18 +105,18 @@ async def collection_stories(
 
 @isebelle_api.get("/collection_places/{collection_id}")
 async def collection_places(collection_id: UUID, request: Request):
-    collection_places = await request.app.state.db.get_collection_places(collection_id)
+    coll_places = await request.app.state.db.get_collection_places(collection_id)
     return Response(
-        content=json.dumps(collection_places, cls=IsebelleJSONEncoder),
+        content=json.dumps(coll_places, cls=IsebelleJSONEncoder),
         media_type="application/json",
     )
 
 
 @isebelle_api.get("/story_places/{story_ids}")
 async def story_places(story_ids: str, request: Request):
-    story_places = await request.app.state.db.get_story_places(story_ids)
+    s_places = await request.app.state.db.get_story_places(story_ids)
     return Response(
-        content=json.dumps(story_places, cls=IsebelleJSONEncoder),
+        content=json.dumps(s_places, cls=IsebelleJSONEncoder),
         media_type="application/json",
     )
 

@@ -65,16 +65,14 @@ async def get_collection_stories(
 async def get_collection_places(self, collection_id: UUID) -> list:
     return await self._pool.fetch(
         """
-        WITH collection_stories AS (
-            SELECT collection_id, story_id FROM story WHERE collection_id = $1
-        ), collection_places AS (
-            SELECT story_place.place_id, array_agg(collection_stories.story_id) as place_stories FROM story_place
-                INNER JOIN collection_stories ON story_place.story_id = collection_stories.story_id
+        WITH collection_story_places AS (
+            SELECT place_id, array_agg(story_id) as place_stories FROM story_place
+                WHERE collection_id = $1
                 GROUP BY place_id
         )
-        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_places.place_stories
-            FROM place INNER JOIN collection_places
-            ON collection_places.place_id = place.place_id 
+        SELECT place.place_id, place.place_name, place.lon, place.lat, collection_story_places.place_stories
+            FROM place INNER JOIN collection_story_places
+            ON collection_story_places.place_id = place.place_id 
         ;
         """,
         collection_id,
