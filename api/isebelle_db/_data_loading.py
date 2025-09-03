@@ -624,8 +624,6 @@ async def load_embeddings(
     if collection_name in collection_prefix:
         story_id_prefix = collection_prefix[collection_name]
 
-    print(coll_story_ids)
-
     with jsonlines.open(embeddings_path) as reader:
         for obj in reader:
             for story_id in obj:
@@ -637,8 +635,6 @@ async def load_embeddings(
                         f"Couldn't find story ID {full_story_id} from embeddings file in DB, skipping"
                     )
                     continue
-
-                logging.info(f"MATCHED STORY FROM DB {full_story_id} TO EMBEDDINGS FILE")
 
                 embedding = obj[story_id]
 

@@ -14,7 +14,7 @@ export const clamp = (num, min, max) => (num < min ? min : num > max ? max : num
  * @param {[number]} arr - The array.
  * @return {number} The mean.
  */
-export const mean = arr => arr.reduce((a, b) => a + b) / arr.length;
+export const mean = arr => (!arr.length) ? 0 : arr.reduce((a, b) => a + b) / arr.length;
 
 /**
  * Gets the median value of an array.
