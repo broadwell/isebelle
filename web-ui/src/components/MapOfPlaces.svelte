@@ -7,12 +7,12 @@
 
 	/**
 	 * @typedef {Object} MapOfPlacesProps
-	 * @property {collectionId} UUID || null
+	 * @property {collectionIds} UUID[] || null
 	 * @property {storiesList} Array
 	 */
 
 	/** @type {MapOfPlacesProps} */
-	let { collectionId, storiesList } = $props();
+	let { collectionIds, storiesList } = $props();
 
 	let placeData = [];
 	let latLngs = [];
@@ -23,9 +23,10 @@
 	let avgLon = 5;
 
 	const getPlaceData = async () => {
-		if (collectionId !== undefined && collectionId !== '') {
+		if (collectionIds !== undefined && collectionIds.length > 0) {
+			const collectionIdStrings = collectionIds.map((item) => `'${item}'`).join(', ');
 			placeData = await (
-				await fetch(`${PUBLIC_API_BASE}/collection_places/${collectionId}`)
+				await fetch(`${PUBLIC_API_BASE}/collection_places/${collectionIdStrings}`)
 			).json();
 		} else if (storiesList !== undefined && storiesList.length > 0) {
 			//const storyIds = storiesList.map((item) => `'${item.id}'`).join(', ');

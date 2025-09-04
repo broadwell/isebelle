@@ -10,7 +10,7 @@
 	let /** @type {Number} */ pageSize = 10;
 	let /** @type {Number} */ totalCollectionStories = 0;
 	let /** @type {String} */ collectionName = '';
-	let /** @type {String} */ collectionId = '';
+	let /** @type {String[]} */ collectionIds = [];
 	let /** @type {String} */ searchQuery = '';
 
 	const headers = [
@@ -44,9 +44,10 @@
 		currentPage = searchParams.has('page') ? searchParams.get('page') : currentPage;
 		pageSize = searchParams.has('pageSize') ? searchParams.get('pageSize') : pageSize;
 
-		collectionId = await fetch(`${$page.data.apiBase}/collection_id/${collectionName}`).then(
+		const collectionId = await fetch(`${$page.data.apiBase}/collection_id/${collectionName}`).then(
 			(data) => data.json().then((data) => data.id)
 		);
+		collectionIds.push(collectionId);
 
 		totalCollectionStories = await fetch(
 			`${$page.data.apiBase}/collection_stories_count/${collectionId}`
@@ -67,54 +68,50 @@
 	};
 </script>
 
-<div>
-	<MapOfPlaces {collectionId} />
-</div>
-<div>
-	{#await getStoryRows()}
-		<ProgressBar helperText="Loading..." />
-	{:then rows}
-		<Pagination
-			totalItems={totalCollectionStories}
-			pageSizes={[10, 15, 20]}
-			page={$page.url.searchParams.has('page')
-				? parseInt($page.url.searchParams.get('page'))
-				: currentPage}
-			pageSize={$page.url.searchParams.has('pageSize')
-				? parseInt($page.url.searchParams.get('pageSize'))
-				: pageSize}
-			on:update={updatePagination}
+{#await getStoryRows()}
+	<ProgressBar helperText="Loading..." />
+{:then rows}
+	<MapOfPlaces {collectionIds} />
+	<Pagination
+		totalItems={totalCollectionStories}
+		pageSizes={[10, 15, 20]}
+		page={$page.url.searchParams.has('page')
+			? parseInt($page.url.searchParams.get('page'))
+			: currentPage}
+		pageSize={$page.url.searchParams.has('pageSize')
+			? parseInt($page.url.searchParams.get('pageSize'))
+			: pageSize}
+		on:update={updatePagination}
+	/>
+	<DataTable
+		title={`Stories in the collection ${collectionName}`}
+		description="Use the search bar below to run a lexical search on this collection."
+		zebra
+		size="tall"
+		{headers}
+		{rows}
+	>
+		<Search
+			bind:value={searchQuery}
+			expanded={true}
+			on:change={searchTexts}
+			placeholder="Enter text to search this collection (original language only)"
 		/>
-		<DataTable
-			title={`Stories in the collection ${collectionName}`}
-			description="Use the search bar below to run a lexical search on this collection."
-			zebra
-			size="tall"
-			{headers}
-			{rows}
-		>
-			<Search
-				bind:value={searchQuery}
-				expanded={true}
-				on:change={searchTexts}
-				placeholder="Enter text to search this collection (original language only)"
-			/>
-			<svelte:fragment slot="cell" let:row let:cell>
-				{#if cell.key === 'text_embedding'}
-					<Link
-						icon={Launch}
-						href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
-						target="_blank">Similar</Link
-					>
-				{:else if cell.key === 'text'}
-					<div class="cell-text">{cell.value}</div>
-				{:else}
-					{cell.value}
-				{/if}
-			</svelte:fragment>
-		</DataTable>
-	{/await}
-</div>
+		<svelte:fragment slot="cell" let:row let:cell>
+			{#if cell.key === 'text_embedding'}
+				<Link
+					icon={Launch}
+					href={`${base}/similar/${row.id}?collection=${collectionName.replaceAll(' ', '_')}`}
+					target="_blank">Similar</Link
+				>
+			{:else if cell.key === 'text'}
+				<div class="cell-text">{cell.value}</div>
+			{:else}
+				{cell.value}
+			{/if}
+		</svelte:fragment>
+	</DataTable>
+{/await}
 
 <style>
 	.cell-text {

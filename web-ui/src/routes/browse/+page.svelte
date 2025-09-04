@@ -1,10 +1,11 @@
 <script>
+	import MapOfPlaces from '$components/MapOfPlaces.svelte';
 	import { DataTable, Search, ProgressBar } from 'carbon-components-svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
-	let /** @type {string[]} */ selectedRowIds = [];
+	let /** @type {String[]} */ selectedRowIds = [];
 	let /** @type {String} */ searchQuery = '';
 
 	const headers = [
@@ -51,6 +52,7 @@
 {#await getCollectionRows()}
 	<ProgressBar helperText="Loading..." />
 {:then rows}
+	<MapOfPlaces collectionIds={selectedRowIds} />
 	<DataTable
 		title="Search and Browse Collections"
 		description="Use the search bar below to search multilingual embeddings of all selected collections, or click on a collection to navigate to it for browsing and lexical search."

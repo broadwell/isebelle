@@ -103,9 +103,9 @@ async def collection_stories(
     )
 
 
-@isebelle_api.get("/collection_places/{collection_id}")
-async def collection_places(collection_id: UUID, request: Request):
-    coll_places = await request.app.state.db.get_collection_places(collection_id)
+@isebelle_api.get("/collection_places/{collection_ids}")
+async def collection_places(collection_ids: str, request: Request):
+    coll_places = await request.app.state.db.get_collection_places(collection_ids)
     return Response(
         content=json.dumps(coll_places, cls=IsebelleJSONEncoder),
         media_type="application/json",

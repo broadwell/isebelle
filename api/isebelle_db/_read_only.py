@@ -82,11 +82,11 @@ async def get_collection_story_ids(self, collection_name: str) -> list:
     )
 
 
-async def get_collection_places(self, collection_id: UUID) -> list:
+async def get_collection_places(self, collection_ids: str) -> list:
     return await self._pool.fetch(
-        """
+        f"""
         WITH collection_stories AS (
-            SELECT collection_id, story_id FROM story WHERE collection_id = $1
+            SELECT collection_id, story_id FROM story WHERE collection_id IN ({collection_ids})
         ), collection_places AS (
             SELECT story_place.place_id, array_agg(DISTINCT collection_stories.story_id) as place_stories FROM story_place
                 INNER JOIN collection_stories ON story_place.story_id = collection_stories.story_id
@@ -96,8 +96,7 @@ async def get_collection_places(self, collection_id: UUID) -> list:
             FROM place INNER JOIN collection_places
             ON collection_places.place_id = place.place_id 
         ;
-        """,
-        collection_id,
+        """
     )
 
 
