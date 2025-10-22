@@ -73,7 +73,7 @@ services:
     container_name: isebelle-web-proxy
     image: nginx:alpine
     ports:
-      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8080}:80
+      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8180}:80
 
     volumes:
       - ./nginx.config:/etc/nginx/conf.d/default.conf
@@ -91,7 +91,7 @@ services:
     profiles:
       - tls
     ports:
-      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8080}:80
+      - ${APP_HOST:-127.0.0.1}:${APP_PORT:-8180}:80
       - ${APP_HOST:-127.0.0.1}:443:443
     volumes:
       - ./nginx.tls.config:/etc/nginx/conf.d/default.conf

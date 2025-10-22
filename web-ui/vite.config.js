@@ -9,6 +9,7 @@ export default defineConfig({
 	server: {
 		fs: {
 			strict: false
-		}
+		},
+		allowedHosts: ["scando.ist.berkeley.edu"]
 	}
 });
